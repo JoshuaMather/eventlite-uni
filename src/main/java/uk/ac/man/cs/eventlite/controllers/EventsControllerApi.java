@@ -40,4 +40,4 @@ public class EventsControllerApi {
 
 		return CollectionModel.of(events, selfLink);
 	}
-}
+} 
