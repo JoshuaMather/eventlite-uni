@@ -1,5 +1,8 @@
 package uk.ac.man.cs.eventlite.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Venue {
 
 	private long id;
