@@ -34,5 +34,10 @@ public class VenueServiceImpl implements VenueService {
 	public Iterable<Venue> findAll() {
 		return venueRepository.findAll();
 	}
+	
+	@Override
+	public Venue save(Venue v) {
+		return venueRepository.save(v);
+	}
 
 }
