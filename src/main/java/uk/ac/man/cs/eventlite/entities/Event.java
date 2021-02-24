@@ -3,12 +3,19 @@ package uk.ac.man.cs.eventlite.entities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+@Entity
 public class Event {
-
+	
+	@Id
+	@GeneratedValue
 	private long id;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -20,7 +27,7 @@ public class Event {
 	private LocalTime time;
 
 	private String name;
-
+	
 	private long venue;
 
 	public Event() {
