@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Component
 @Profile({ "default", "test" })
@@ -59,6 +60,15 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		e3.setTime(LocalTime.of(16, 00));
 		e3.setVenue(2);
 		eventService.save(e3);
-
+		
+		Venue v1 = new Venue();
+		v1.setName("Kilburn G23");
+		v1.setCapacity(80);
+		venueService.save(v1);
+		
+		Venue v2 = new Venue();
+		v2.setName("Online");
+		v2.setCapacity(100000);
+		venueService.save(v2);
 	}
 }
