@@ -37,30 +37,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		}
 
 		// Build and save initial models here.
-		Event e1 = new Event();
-		e1.setId(1);
-		e1.setName("COMP23412 Showcase, group G");
-		e1.setDate(LocalDate.of(2021, 05, 13));
-		e1.setTime(LocalTime.of(16, 00));
-		e1.setVenue(2);
-		eventService.save(e1);
-		
-		Event e2 = new Event();
-		e2.setId(2);
-		e2.setName("COMP23412 Showcase, group H");
-		e2.setDate(LocalDate.of(2021, 05, 11));
-		e2.setTime(LocalTime.of(11, 00));
-		e2.setVenue(2);
-		eventService.save(e2);
-		
-		Event e3 = new Event();
-		e3.setId(3);
-		e3.setName("COMP23412 Showcase, group F");
-		e3.setDate(LocalDate.of(2021, 05, 10));
-		e3.setTime(LocalTime.of(16, 00));
-		e3.setVenue(2);
-		eventService.save(e3);
-		
 		Venue v1 = new Venue();
 		v1.setName("Kilburn G23");
 		v1.setCapacity(80);
@@ -70,5 +46,26 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		v2.setName("Online");
 		v2.setCapacity(100000);
 		venueService.save(v2);
+		
+		Event e1 = new Event();
+		e1.setName("COMP23412 Showcase, group G");
+		e1.setDate(LocalDate.of(2021, 05, 13));
+		e1.setTime(LocalTime.of(16, 00));
+		e1.setVenue(v2);
+		eventService.save(e1);
+		
+		Event e2 = new Event();
+		e2.setName("COMP23412 Showcase, group H");
+		e2.setDate(LocalDate.of(2021, 05, 11));
+		e2.setTime(LocalTime.of(11, 00));
+		e2.setVenue(v2);
+		eventService.save(e2);
+		
+		Event e3 = new Event();
+		e3.setName("COMP23412 Showcase, group F");
+		e3.setDate(LocalDate.of(2021, 05, 10));
+		e3.setTime(LocalTime.of(16, 00));
+		e3.setVenue(v2);
+		eventService.save(e3);
 	}
 }

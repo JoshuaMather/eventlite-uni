@@ -1,29 +1,38 @@
 package uk.ac.man.cs.eventlite.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Venue {
 	
 	@Id
 	@GeneratedValue
-	private long id;
+	private long venue_id;
 
 	private String name;
 
 	private int capacity;
+	
+	@OneToMany()
+	private List<Event> events = new ArrayList<Event>();
 
 	public Venue() {
 	}
 
 	public long getId() {
-		return id;
+		return venue_id;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.venue_id = id;
 	}
 
 	public String getName() {
