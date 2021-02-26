@@ -32,7 +32,6 @@ public class Event {
 	private String name;
 	
 	@ManyToOne
-	@JoinColumn(name="venue_id", referencedColumnName = "venue_id", insertable = false, updatable = false)
 	private Venue venue;
 
 	public Event() {

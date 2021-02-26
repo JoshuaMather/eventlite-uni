@@ -22,7 +22,7 @@ public class Venue {
 	private int capacity;
 	
 	@OneToMany()
-	private List<Event> events = new ArrayList<Event>();
+	private List<Event> events;
 
 	public Venue() {
 	}
