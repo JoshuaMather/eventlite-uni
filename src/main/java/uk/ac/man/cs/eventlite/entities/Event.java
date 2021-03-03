@@ -33,6 +33,8 @@ public class Event {
 	
 	@ManyToOne
 	private Venue venue;
+	
+	private String description;
 
 	public Event() {
 	}
@@ -75,5 +77,13 @@ public class Event {
 
 	public void setVenue(Venue venue) {
 		this.venue = venue;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

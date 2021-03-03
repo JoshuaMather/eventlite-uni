@@ -28,46 +28,23 @@ import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @RestController
-@RequestMapping(value = "/api/events", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
-public class EventsControllerApi {
+@RequestMapping(value = "/api/venues", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+public class VenuesControllerApi {
 
 	@Autowired
-	private EventService eventService;
+	private VenueService venueService;
 
 	@GetMapping
-	public CollectionModel<Event> getAllEvents() {
+	public CollectionModel<Venue> getAllVenues() {
 
-		return eventCollection(eventService.findAll());
-	}
-
-	private EntityModel<Event> singleEvent(Event event) {
-		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
-
-		return EntityModel.of(event, selfLink);
-	}
-
-	private CollectionModel<Event> eventCollection(Iterable<Event> events) {
-		Link selfLink = linkTo(methodOn(EventsControllerApi.class).getAllEvents()).withSelfRel();
-
-		return CollectionModel.of(events, selfLink);
+		return venueCollection(venueService.findAll());
 	}
 	
-	@GetMapping("/new")
-	public ResponseEntity<?> newEvent() {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	private CollectionModel<Venue> venueCollection(Iterable<Venue> venues) {
+		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
+
+		return CollectionModel.of(venues, selfLink);
 	}
-	
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createEvent(@RequestBody @Valid Event event, BindingResult result) {
 
-		if (result.hasErrors()) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-
-		eventService.save(event);
-		URI location = linkTo(EventsControllerApi.class).slash(event.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-	}
 
 } 
