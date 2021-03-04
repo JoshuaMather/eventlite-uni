@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +70,11 @@ public class EventsControllerApi {
 		URI location = linkTo(EventsControllerApi.class).slash(event.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public void deleteEventById(@PathVariable Long id) {
+		eventService.deleteById(id);
 	}
 
 } 

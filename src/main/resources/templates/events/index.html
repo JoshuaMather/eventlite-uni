@@ -28,6 +28,11 @@
           <td th:text="${e.venue.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+          <td>
+             <form th:action="@{/events/delete}">
+             <button type="submit" class="btn btn-danger" th:name="id" th:value="${e.id}"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>   
+             </form>
+          </td>
         </tr>
       </tbody>
     </table>
