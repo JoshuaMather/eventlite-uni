@@ -20,6 +20,8 @@
           <th><i class="fas fa-map-marker-alt"></i> Venue</th>
           <th><i class="fas fa-calendar"></i> Date</th>
           <th><i class="fas fa-clock"></i> Time</th>
+          <th><i class="fas fa-info"></i> Description</th>
+          <th><i class="fas fa-delete"></i> Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +30,11 @@
           <td th:text="${e.venue.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+          <td > 
+          	<form th:action="@{/events/{id}(id=${e.id})}" th:method="get">
+          	<button type="submit" class="btn btn-primary"><i class="fas fa-" aria-hidden="true"></i> View Event</button>
+          	</form>
+          </td>
           <td>
              <form th:action="@{/events/delete}">
              <button type="submit" class="btn btn-danger" th:name="id" th:value="${e.id}"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>   

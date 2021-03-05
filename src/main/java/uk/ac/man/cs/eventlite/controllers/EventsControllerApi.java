@@ -54,9 +54,23 @@ public class EventsControllerApi {
 		return CollectionModel.of(events, selfLink);
 	}
 	
+	
 	@GetMapping("/new")
 	public ResponseEntity<?> newEvent() {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	}
+	
+	@GetMapping("/{id}")
+	public EntityModel<Event> eventDescription(@PathVariable("id") long id) {
+		Event event = eventService.findById(id);
+
+		return eventToResource(event);
+	}
+	
+	private EntityModel<Event> eventToResource(Event event) {
+		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
+
+		return EntityModel.of(event, selfLink);
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

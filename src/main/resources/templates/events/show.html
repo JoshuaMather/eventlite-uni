@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/default}">
+<head>
+  <title>Event Description</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    
+    <br><h1><u th:text="${event.name}"></u></h1><br>
+    
+    <lable><u><strong>Location:</strong></u></lable>
+    <h2 th:text="${event.venue.name}"></h2><br>   
+  
+  	<lable><u><strong>Date of event:</strong></u></lable>   	
+    	<p th:text="${event.date}"> Date</p>
+    	
+    <lable><u><strong>Time of Evenet:</strong></u></lable>	
+    	<p th:text="${event.time}"> Time</p>
+    
+    <lable><u><strong>Event Description:</strong></u></lable>
+    <p th:text="${event.description}"></p><br>
+  
+ 	<br><br>
+     <a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
+  </div>
+</body>
+</html>
