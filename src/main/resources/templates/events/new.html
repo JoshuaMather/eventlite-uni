@@ -12,7 +12,7 @@
 		<form action="#" th:action="@{/events}" th:object="${event}" method="post">
 		<table>
         <tr><td> <p>Name: </td> <td> <input type="text" th:field="*{name}" /></p> </td></tr>
-        <tr><td> <p>Description: </td> <td> <input type="text" th:field="*{description}" /></p></td></tr>
+        <tr><td> <p>Description: </td> <td> <textarea rows="4" cols="50" name="comment" th:field="*{description}"></textarea></td></tr>
 		<tr><td> <p>Venue: </td> <td>
         <select th:field="*{venue}">
         	<option th:each="venue : ${venues}"
@@ -27,8 +27,5 @@
 	    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
         </form>
     </div>
-    
-
 </body>
-
 </html>

@@ -72,7 +72,7 @@ public class EventsControllerApi {
 		return ResponseEntity.created(location).build();
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteEventById(@PathVariable Long id) {
 		eventService.deleteById(id);
 	}
