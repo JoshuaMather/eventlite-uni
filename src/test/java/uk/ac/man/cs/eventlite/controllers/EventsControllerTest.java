@@ -1,12 +1,16 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import static org.mockito.Mockito.verify;
+
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.util.Collections;
 
@@ -74,5 +78,14 @@ public class EventsControllerTest {
 
 		verify(eventService).findAll();
 		verify(venueService).findAll();
+	}
+	
+	@Test
+	public void deleteAnEvent() throws Exception {
+		when(eventService.findById(0)).thenReturn(event);
+		// Fix this error: isFound()
+		mvc.perform(delete("/events/0").with(user("Mustafa").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isFound()).andExpect(view().name("redirect:/events"));
+			
 	}
 }

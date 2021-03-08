@@ -68,7 +68,7 @@ public class EventsController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteEventById(@RequestParam(value="id", required=true)Long id, Model model) {
+	public String deleteEventById(@PathVariable Long id) {
 		eventService.deleteById(id);
 		return "redirect:/events";
 	}

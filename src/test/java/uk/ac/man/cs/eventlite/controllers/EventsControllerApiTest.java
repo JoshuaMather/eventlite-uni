@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -70,5 +72,23 @@ public class EventsControllerApiTest {
 				.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)));
 
 		verify(eventService).findAll();
+	}
+	
+	@Test
+	public void deleteAnEvent() throws Exception {
+		Event event = new Event();
+		Venue venue = new Venue();
+		
+		event.setId(0);
+		event.setName("Event");
+		event.setDate(LocalDate.now());
+		event.setTime(LocalTime.now());
+		event.setVenue(venue);
+		when(eventService.findById(0)).thenReturn(event);
+		
+		mvc.perform(delete("/api/events/0").with(user("Mustafa").roles(Security.ADMIN_ROLE)).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+		
+		verify(eventService).deleteById(0);
 	}
 }

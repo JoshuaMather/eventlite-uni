@@ -41,7 +41,7 @@
           </td>
           <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	          <td>
-	             <form th:action="@{/events/delete}" th:method="delete">
+	             <form th:action="@{/events/{id}(id=${e.id})}" th:method="delete">
 	             <button type="submit" class="btn btn-danger" th:name="id" th:value="${e.id}"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>   
 	             </form>
 	          </td>
