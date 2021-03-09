@@ -54,8 +54,6 @@ public class EventsController {
 	public String createEvent(@RequestBody @Valid @ModelAttribute Event event, BindingResult errors,
 			Model model, RedirectAttributes redirectAttrs) {
 
-		System.out.println(errors.toString());
-		System.out.println(redirectAttrs.toString());
 		if (errors.hasErrors()) {
 			model.addAttribute("event", event);
 			return "events/new";
