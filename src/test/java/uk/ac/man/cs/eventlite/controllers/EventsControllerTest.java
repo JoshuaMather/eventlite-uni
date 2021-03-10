@@ -1,6 +1,8 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -8,18 +10,24 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,6 +47,8 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 @WebMvcTest(EventsController.class)
 @Import(Security.class)
 public class EventsControllerTest {
+	
+	private final static String BAD_ROLE = "USER";
 
 	@Autowired
 	private MockMvc mvc;
@@ -106,12 +116,115 @@ public class EventsControllerTest {
 				.andExpect(handler().methodName("newEvent"));
 	}
 	
+	@Test
+	public void postEventNoAuth() throws Exception {
+		mvc.perform(post("/events").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test")
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+				.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEventBadRole() throws Exception {
+		mvc.perform(
+				post("/events").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+						.param("name", "test").accept(MediaType.TEXT_HTML).with(csrf()))
+				.andExpect(status().isForbidden());
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEmptyNameEvent() throws Exception {
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "").accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "name"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEmptyDateEvent() throws Exception {
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("date", "").accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "date"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postLongNameEvent() throws Exception {
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+				.andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "name"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postPastDateEvent() throws Exception {
+		LocalDate date = LocalDate.of(1900, 3, 10);
+		
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("date", date.toString()).accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "date"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postTodayDateEvent() throws Exception {
+		LocalDate date = LocalDate.now();
+		
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("date", date.toString()).accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "date"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postLongDescriptionEvent() throws Exception {
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("description", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+				.andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "description"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
 //	@Test
-//	public void postEventNoAuth() throws Exception {
-//		mvc.perform(post("/event").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test")
-//				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
-//				.andExpect(header().string("Location", endsWith("/sign-in")));
+//	public void postEvent() throws Exception {
+//		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
 //
-//		verify(eventService, never()).save(event);
+//		
+//		LocalDate date = LocalDate.of(2099, 3, 10);
+//		Venue venue = new Venue();
+//		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+//				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test").param("date", date.toString())
+//				.param("venue", String.valueOf(venue))
+//				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound()).andExpect(content().string(""))
+//				.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
+//				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
+//
+//		verify(eventService).save(arg.capture());
+//		assertThat("test", equalTo(arg.getValue().getName()));
+//		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
+//		assertThat(String.valueOf(venue), equalTo(String.valueOf(arg.getValue().getVenue())));
 //	}
+
 }

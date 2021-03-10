@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.never;
@@ -7,9 +9,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
@@ -19,6 +24,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +42,8 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 @WebMvcTest(EventsControllerApi.class)
 @Import(Security.class)
 public class EventsControllerApiTest {
+
+	private final static String BAD_ROLE = "USER";
 
 	@Autowired
 	private MockMvc mvc;
@@ -102,13 +110,118 @@ public class EventsControllerApiTest {
 				.andExpect(handler().methodName("newEvent"));
 	}
 	
+	@Test
+	public void postEventNoAuth() throws Exception {
+		mvc.perform(post("/api/events").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"test\" }").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEventBadAuth() throws Exception {
+		mvc.perform(post("/api/events").with(anonymous()).contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"test\" }").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEventBadRole() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"test\" }").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden());
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEmptyNameEvent() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"name\": \"\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
+				.andExpect(content().string("")).andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postEmptyDateEvent() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"date\": \"\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
+				.andExpect(content().string("")).andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postLongNameEvent() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" }").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
+				.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postPastDateEvent() throws Exception {
+		LocalDate date = LocalDate.of(1900, 3, 10);
+		
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"date\": \"" +date.toString()+"\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
+				.andExpect(content().string("")).andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postTodayDateEvent() throws Exception {
+		LocalDate date = LocalDate.now();
+		
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"date\": \"" +date.toString()+"\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
+				.andExpect(content().string("")).andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postLongDescriptionEvent() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"description\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" }").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
+				.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
 //	@Test
-//	public void postEventNoAuth() throws Exception {
-//		mvc.perform(post("/api/event").contentType(MediaType.APPLICATION_JSON)
-//				.content("{ \"name\": \"test\" }").accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isUnauthorized());
+//	public void postEvent() throws Exception {
+//		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
 //
-//		verify(eventService, never()).save(event);
+//		LocalDate date = LocalDate.of(2099, 3, 10);
+//		Venue venue = new Venue();
+//		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+//				.contentType(MediaType.APPLICATION_JSON)
+//				.content("{ \"name\": \"test\" }").content("{ \"date\": \""+date.toString()+"\" }")
+//				.content("{ \"venue\": \""+String.valueOf(venue)+"\" }")
+//				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(content().string(""))
+//				.andExpect(header().string("Location", containsString("/api/events/")))
+//				.andExpect(handler().methodName("createEvent"));
+//
+//		verify(eventService).save(arg.capture());
+//		assertThat("test", equalTo(arg.getValue().getName()));
+//		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
+//		assertThat(String.valueOf(venue), equalTo(String.valueOf(arg.getValue().getVenue())));
+//	
 //	}
 	
 }
