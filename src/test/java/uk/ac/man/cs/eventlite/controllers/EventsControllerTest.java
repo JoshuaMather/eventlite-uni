@@ -1,11 +1,15 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.hamcrest.Matchers.endsWith;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -88,4 +92,26 @@ public class EventsControllerTest {
 				.with(csrf())).andExpect(status().isFound()).andExpect(view().name("redirect:/events"));
 			
 	}
+	
+	@Test
+	public void getNewEventNoAuth() throws Exception {
+		mvc.perform(get("/events/new").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+				.andExpect(header().string("Location", endsWith("/sign-in")));
+	}
+
+	@Test
+	public void getNewEvent() throws Exception {
+		mvc.perform(get("/events/new").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(handler().methodName("newEvent"));
+	}
+	
+//	@Test
+//	public void postEventNoAuth() throws Exception {
+//		mvc.perform(post("/event").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test")
+//				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+//				.andExpect(header().string("Location", endsWith("/sign-in")));
+//
+//		verify(eventService, never()).save(event);
+//	}
 }

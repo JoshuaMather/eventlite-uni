@@ -2,9 +2,11 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +39,8 @@ public class EventsControllerApiTest {
 
 	@Autowired
 	private MockMvc mvc;
+	
+	private Event event;
 
 	@MockBean
 	private EventService eventService;
@@ -91,4 +95,20 @@ public class EventsControllerApiTest {
 		
 		verify(eventService).deleteById(0);
 	}
+	
+	@Test
+	public void getNewEvent() throws Exception {
+		mvc.perform(get("/api/events/new").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
+				.andExpect(handler().methodName("newEvent"));
+	}
+	
+//	@Test
+//	public void postEventNoAuth() throws Exception {
+//		mvc.perform(post("/api/event").contentType(MediaType.APPLICATION_JSON)
+//				.content("{ \"name\": \"test\" }").accept(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isUnauthorized());
+//
+//		verify(eventService, never()).save(event);
+//	}
+	
 }

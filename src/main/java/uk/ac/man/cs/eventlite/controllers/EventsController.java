@@ -56,6 +56,7 @@ public class EventsController {
 
 		if (errors.hasErrors()) {
 			model.addAttribute("event", event);
+			model.addAttribute("venues", venueService.findAll());
 			return "events/new";
 		}
 

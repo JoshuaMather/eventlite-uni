@@ -2,6 +2,7 @@ package uk.ac.man.cs.eventlite.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import uk.ac.man.cs.eventlite.entities.Event;
 
