@@ -21,15 +21,15 @@
 			<tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p></td></tr></tr>
 	        </div>
 	        
-	        <div class="form-group" th:classappend="${#fields.hasErrors('venue')}? has-error">
+	        <div class="form-group" th:classappend="${#fields.hasErrors('v_id')}? has-error">
 			<tr><td> <p>Venue: </td> <td>
-	        <select th:field="*{venue}" >
+	        <select th:field="*{v_id}" >
 	        	<option th:each="venue : ${venues}"
 	        		th:value="${venue.id}"
 	        		th:text="${venue.name}"></option>
 	        </select>
 	        </p> </td>
-	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}">errors</p></td></tr></tr>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('v_id')}" th:errors="*{v_id}">errors</p></td></tr></tr>
 	        </div>
 	 
 	 		<div class="form-group" th:classappend="${#fields.hasErrors('date')}? has-error">

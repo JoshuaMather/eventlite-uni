@@ -39,10 +39,12 @@ public class Event {
 	@Size(max = 255, message = "The event name must have 255 characters or less.")
 	private String name;
 	
-	@NotNull(message = "The venue cannot be empty.")
 	@ManyToOne
 	private Venue venue;
 	
+	@NotNull(message = "The venue cannot be empty.")
+	private long v_id;
+
 	@Size(max = 499, message = "The greeting must have 499 characters or less.")
 	private String description;
 
@@ -95,5 +97,13 @@ public class Event {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public long getV_id() {
+		return v_id;
+	}
+
+	public void setV_id(long v_id) {
+		this.v_id = v_id;
 	}
 }

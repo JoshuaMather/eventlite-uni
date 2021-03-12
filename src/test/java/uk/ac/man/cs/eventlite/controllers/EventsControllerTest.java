@@ -84,7 +84,8 @@ public class EventsControllerTest {
 		when(venue.getName()).thenReturn("Kilburn Building");
 		when(venueService.findAll()).thenReturn(Collections.<Venue>singletonList(venue));
 
-		when(event.getVenue()).thenReturn(null);
+		Venue venue = new Venue();
+		when(event.getVenue()).thenReturn(venue);
 		when(eventService.findAll()).thenReturn(Collections.<Event>singletonList(event));
 
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
@@ -158,6 +159,17 @@ public class EventsControllerTest {
 	}
 	
 	@Test
+	public void postEmptyVenueEvent() throws Exception {
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("v_id", "").accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("events/new"))
+				.andExpect(model().attributeHasFieldErrors("event", "v_id"))
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
 	public void postLongNameEvent() throws Exception {
 		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
@@ -207,24 +219,24 @@ public class EventsControllerTest {
 		verify(eventService, never()).save(event);
 	}
 	
-//	@Test
-//	public void postEvent() throws Exception {
-//		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
-//
-//		
-//		LocalDate date = LocalDate.of(2099, 3, 10);
-//		Venue venue = new Venue();
-//		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
-//				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test").param("date", date.toString())
-//				.param("venue", String.valueOf(venue))
-//				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound()).andExpect(content().string(""))
-//				.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
-//				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
-//
-//		verify(eventService).save(arg.capture());
-//		assertThat("test", equalTo(arg.getValue().getName()));
-//		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
-//		assertThat(String.valueOf(venue), equalTo(String.valueOf(arg.getValue().getVenue())));
-//	}
+	@Test
+	public void postEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+
+		
+		LocalDate date = LocalDate.of(2099, 3, 10);
+		Venue venue = new Venue();
+		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test").param("date", date.toString())
+				.param("v_id", String.valueOf(venue.getId()))
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound()).andExpect(content().string(""))
+				.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
+				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
+
+		verify(eventService).save(arg.capture());
+		assertThat("test", equalTo(arg.getValue().getName()));
+		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
+		assertThat(String.valueOf(venue.getId()), equalTo(String.valueOf(arg.getValue().getV_id())));
+	}
 
 }

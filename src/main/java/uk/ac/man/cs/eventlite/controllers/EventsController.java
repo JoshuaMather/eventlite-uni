@@ -60,6 +60,7 @@ public class EventsController {
 			return "events/new";
 		}
 
+		event.setVenue(venueService.findById(event.getV_id()));
 		eventService.save(event);
 		redirectAttrs.addFlashAttribute("ok_message", "New event added.");
 

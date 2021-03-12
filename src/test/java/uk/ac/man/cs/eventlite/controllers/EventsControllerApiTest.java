@@ -158,6 +158,16 @@ public class EventsControllerApiTest {
 	}
 	
 	@Test
+	public void postEmptyVenueEvent() throws Exception {
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"v_id\": \"\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
+				.andExpect(content().string("")).andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
 	public void postLongNameEvent() throws Exception {
 		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON)
@@ -203,25 +213,24 @@ public class EventsControllerApiTest {
 		verify(eventService, never()).save(event);
 	}
 	
-//	@Test
-//	public void postEvent() throws Exception {
-//		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
-//
-//		LocalDate date = LocalDate.of(2099, 3, 10);
-//		Venue venue = new Venue();
-//		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.content("{ \"name\": \"test\" }").content("{ \"date\": \""+date.toString()+"\" }")
-//				.content("{ \"venue\": \""+String.valueOf(venue)+"\" }")
-//				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(content().string(""))
-//				.andExpect(header().string("Location", containsString("/api/events/")))
-//				.andExpect(handler().methodName("createEvent"));
-//
-//		verify(eventService).save(arg.capture());
-//		assertThat("test", equalTo(arg.getValue().getName()));
-//		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
-//		assertThat(String.valueOf(venue), equalTo(String.valueOf(arg.getValue().getVenue())));
-//	
-//	}
+	@Test
+	public void postEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+
+		LocalDate date = LocalDate.of(2099, 3, 10);
+		Venue venue = new Venue();
+		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"test\",  \"date\": \""+date.toString()+"\", \"v_id\": \""+String.valueOf(venue.getId())+"\"}")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(content().string(""))
+				.andExpect(header().string("Location", containsString("/api/events/")))
+				.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService).save(arg.capture());
+		assertThat("test", equalTo(arg.getValue().getName()));
+		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
+		assertThat(String.valueOf(venue.getId()), equalTo(String.valueOf(arg.getValue().getId())));
+	
+	}
 	
 }
