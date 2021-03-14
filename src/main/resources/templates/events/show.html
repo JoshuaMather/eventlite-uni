@@ -9,20 +9,36 @@
     
     <br><h1><u th:text="${event.name}"></u></h1><br>
     
-    <lable><u><strong>Location:</strong></u></lable>
+    <label><u><strong>Location:</strong></u></label>
     <h2 th:text="${event.venue.name}"></h2><br>   
   
-  	<lable><u><strong>Date of event:</strong></u></lable>   	
+  	<label><u><strong>Date of event:</strong></u></label>   	
     	<p th:text="${event.date}"> Date</p>
     	
-    <lable><u><strong>Time of Evenet:</strong></u></lable>	
+    <label><u><strong>Time of Event:</strong></u></label>	
     	<p th:text="${event.time}"> Time</p>
     
-    <lable><u><strong>Event Description:</strong></u></lable>
+    <label><u><strong>Event Description:</strong></u></label>
     <p th:text="${event.description}"></p><br>
   
- 	<br><br>
-     <a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
+ 	<br>
+ 	<table>
+     <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/edit(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+	      </div>
+   
+     </table>
+     <br>
+     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	 <form th:action = "@{/events/{id}(id=${event.id})}" th:method="delete">
+	      <button class="btn btn-danger" type="submit" th:name="id" th:value="${event.id}"> <i class="fa fa-trash-alt" aria-hidden="true"></i>
+	      Delete
+	      </button>
+	 </form>
+	 </div>
+	 
+	
   </div>
 </body>
 </html>

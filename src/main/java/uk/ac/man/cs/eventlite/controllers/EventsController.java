@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -73,12 +74,33 @@ public class EventsController {
 		return "redirect:/events";
 	}
 	
+	
 	@GetMapping("/{id}")
 	public String eventDescription(@PathVariable("id") long id, Model model) {	
 		Event event = eventService.findById(id);
 		model.addAttribute("event", event);
 
 		return "events/show";
+	}
+	
+	@GetMapping("/{id}/edit")
+	public String editEvent(Model model, @PathVariable("id") long id) {
+		model.addAttribute("event", eventService.findById(id));
+		model.addAttribute("venues", venueService.findAll());
+		
+		return "/events/update";
+	}
+	
+	@PostMapping("/{id}/edit")
+	public String saveUpdates(Model model, @PathVariable("id") long id, @Valid @ModelAttribute Event event,BindingResult result) {
+		if(result.hasErrors()) {
+			return String.format("redirect:/events/%d/edit", id);
+		}
+		
+		//event.setVenue(venueService.findById(event.getV_id()));
+		eventService.save(event);
+		
+		return "redirect:/events";
 	}
 
 
