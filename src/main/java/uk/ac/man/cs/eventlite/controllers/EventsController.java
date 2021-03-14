@@ -83,7 +83,7 @@ public class EventsController {
 		return "events/show";
 	}
 	
-	@GetMapping("/{id}/edit")
+	@GetMapping("/{id}/update")
 	public String updateEvent(Model model, @PathVariable("id") long id) {
 		model.addAttribute("event", eventService.findById(id));
 		model.addAttribute("venues", venueService.findAll());
@@ -91,12 +91,12 @@ public class EventsController {
 		return "/events/update";
 	}
 	
-	@PostMapping("/{id}/edit")
+	@PostMapping("/{id}/update")
 	public String saveUpdates(Model model, @PathVariable("id") long id, 
 			@Valid @ModelAttribute Event event,BindingResult result) {
 		
 		if(result.hasErrors()) {
-			return String.format("redirect:/events/%d/edit", id);
+			return String.format("redirect:/events/%d/upate", id);
 		}
 		
 		eventService.save(event);

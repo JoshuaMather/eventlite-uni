@@ -95,7 +95,7 @@ public class EventsControllerApi {
 	}
 	
 	
-	@PostMapping("/{id}/edit")
+	@PostMapping("/{id}/update")
 	public ResponseEntity<?> updateEvent(@PathVariable("id") long id, 
 			@Valid @ModelAttribute Event event, BindingResult result) {
 		if(result.hasErrors()) {
