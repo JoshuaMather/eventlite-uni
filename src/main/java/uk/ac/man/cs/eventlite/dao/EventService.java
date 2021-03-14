@@ -13,4 +13,6 @@ public interface EventService {
 	public void deleteById(long id);
 	
 	public Event findById(long id);
+	
 }
+
