@@ -18,7 +18,7 @@
     </div> 
     	
     <label><u><strong>Location:</strong></u></label>
-    <p th:text="${event.venue.name}"></p><br>  
+    <p th:text="${event.venue.name}"></p> 
     
     <div th:if="${event.description} != null">
    		<lable><u><strong>Event Description:</strong></u></lable>
@@ -36,17 +36,13 @@
      	<p th:text="${event.description}">No Description</p>
      </span>-->
   
- 	<br>
  	<table>
      <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
     
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
-<<<<<<< HEAD
 	 </div>
-=======
-	      </div>
->>>>>>> branch 'minimum_viable_product' of https://gitlab.cs.man.ac.uk/comp23412_2020/eventlite_F01.git
+
    
      </table>
      <br>
