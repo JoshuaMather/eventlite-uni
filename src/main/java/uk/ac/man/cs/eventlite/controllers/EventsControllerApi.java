@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,6 +93,19 @@ public class EventsControllerApi {
 		eventService.deleteById(id);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	
+	@PostMapping("/{id}/update")
+	public ResponseEntity<?> updateEvent(@PathVariable("id") long id, 
+			@Valid @ModelAttribute Event event, BindingResult result) {
+		if(result.hasErrors()) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+		eventService.save(event);
+		
+		return ResponseEntity.ok().build();
 	}
 
 } 

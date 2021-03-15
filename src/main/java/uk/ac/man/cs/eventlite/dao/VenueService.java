@@ -10,4 +10,6 @@ public interface VenueService {
 	
     @SuppressWarnings("unchecked")
 	public Venue save(Venue v);
+    
+    public Venue findById(long id);
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import uk.ac.man.cs.eventlite.entities.Event;
 
@@ -56,8 +57,7 @@ public class EventServiceImpl implements EventService {
 		
 		ArrayList<Event> Events = new ArrayList<Event>();
 		
-//		LocalDate now = LocalDate.now();
-		LocalDate now = LocalDate.of(2021, 05, 12);
+		LocalDate now = LocalDate.now();
 		
 		for (Event e: events) {
 			if (e.getDate().isBefore(now) || e.getDate().equals(now)) {

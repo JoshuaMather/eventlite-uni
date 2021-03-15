@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.Instant;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -40,7 +43,8 @@ public class EventsController {
 		events = eventService.findAllByDesc();
 		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
 		model.addAttribute("venues", venueService.findAll());
-
+		model.addAttribute("java8Instant", Instant.now());
+		
 		return "events/index";
 	}
 	
@@ -58,13 +62,13 @@ public class EventsController {
 	public String createEvent(@RequestBody @Valid @ModelAttribute Event event, BindingResult errors,
 			Model model, RedirectAttributes redirectAttrs) {
 
-		System.out.println(errors.toString());
-		System.out.println(redirectAttrs.toString());
 		if (errors.hasErrors()) {
 			model.addAttribute("event", event);
+			model.addAttribute("venues", venueService.findAll());
 			return "events/new";
 		}
 
+		event.setVenue(venueService.findById(event.getV_id()));
 		eventService.save(event);
 		redirectAttrs.addFlashAttribute("ok_message", "New event added.");
 
@@ -77,12 +81,35 @@ public class EventsController {
 		return "redirect:/events";
 	}
 	
+	
 	@GetMapping("/{id}")
 	public String eventDescription(@PathVariable("id") long id, Model model) {	
 		Event event = eventService.findById(id);
 		model.addAttribute("event", event);
+		model.addAttribute("java8Instant", Instant.now());
 
 		return "events/show";
+	}
+	
+	@GetMapping("/{id}/update")
+	public String updateEvent(Model model, @PathVariable("id") long id) {
+		model.addAttribute("event", eventService.findById(id));
+		model.addAttribute("venues", venueService.findAll());
+		
+		return "/events/update";
+	}
+	
+	@PostMapping("/{id}/update")
+	public String saveUpdates(Model model, @PathVariable("id") long id, 
+			@Valid @ModelAttribute Event event,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return String.format("redirect:/events/%d/update", id);
+		}
+		
+		eventService.save(event);
+		
+		return "redirect:/events";
 	}
 
 

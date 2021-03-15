@@ -7,22 +7,52 @@
 <body>
   <div layout:fragment="content">
     
-    <br><h1><u th:text="${event.name}"></u></h1><br>
-    
-    <lable><u><strong>Location:</strong></u></lable>
-    <h2 th:text="${event.venue.name}"></h2><br>   
+    <br><h1 th:text="${event.name}"></h1><br> 
   
-  	<lable><u><strong>Date of event:</strong></u></lable>   	
-    	<p th:text="${event.date}"> Date</p>
-    	
-    <lable><u><strong>Time of Evenet:</strong></u></lable>	
+  	<lable><u><strong>Date of Event:</strong></u></lable>   	
+    <p th:text="${#temporals.format(event.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
+    
+    <div th:if="${event.time} != null">	
+    	<lable><u><strong>Time of Event:</strong></u></lable>
     	<p th:text="${event.time}"> Time</p>
+    </div> 
+    	
+    <label><u><strong>Location:</strong></u></label>
+    <p th:text="${event.venue.name}"></p> 
     
-    <lable><u><strong>Event Description:</strong></u></lable>
-    <p th:text="${event.description}"></p><br>
+    <div th:if="${event.description} != null">
+   		<lable><u><strong>Event Description:</strong></u></lable>
+    	<p th:text="${event.description}">No Description</p><br>
+	</div>
+	 
+	 <!-- This is example implementation for more information
+	 <lable><u><strong>Event Description:</strong></u></lable>
+	 
+	 <span th:if="${event.description == null}">
+	 	<p> No description</p>
+	 </span>
+     
+     <span th:unless="${event.description == null}">
+     	<p th:text="${event.description}">No Description</p>
+     </span>-->
   
- 	<br><br>
-     <a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
+ 	<table>
+     <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+    
+     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+	 </div>
+
+   
+     </table>
+     <br>
+     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	 <form th:action = "@{/events/{id}(id=${event.id})}" th:method="delete">
+	      <button class="btn btn-danger" type="submit" th:name="id" th:value="${event.id}"> <i class="fa fa-trash-alt" aria-hidden="true"></i>
+	      Delete
+	      </button>
+	 </form>
+	 </div>
   </div>
 </body>
 </html>
