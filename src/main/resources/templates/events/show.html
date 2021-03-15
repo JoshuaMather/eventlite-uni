@@ -25,7 +25,7 @@
  	<table>
      <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
-	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/edit(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
 	      </div>
    
      </table>
