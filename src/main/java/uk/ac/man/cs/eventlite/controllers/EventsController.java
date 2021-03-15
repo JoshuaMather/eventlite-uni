@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,8 +34,11 @@ public class EventsController {
 
 	@GetMapping
 	public String getAllEvents(Model model) {
-
+		Iterable<Event> events = eventService.findAllByAsc();
 		model.addAttribute("events", eventService.findAll());
+		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events));
+		events = eventService.findAllByDesc();
+		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
 		model.addAttribute("venues", venueService.findAll());
 
 		return "events/index";

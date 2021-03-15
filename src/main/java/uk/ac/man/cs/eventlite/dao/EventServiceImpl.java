@@ -1,5 +1,8 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.util.ArrayList;
+import java.time.LocalDate;  
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +20,53 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
+	public Iterable<Event> findAllByAsc() {
+		return eventRepository.findAllByOrderByDateAscNameAsc();
+	}
+	
+	@Override
+	public Iterable<Event> findAllByDesc() {
+		return eventRepository.findAllByOrderByDateDescNameAsc();
+	}
+	
+	@Override
 	public Iterable<Event> findAll() {
-		return eventRepository.findAllByOrderByDateAscTimeAsc();
+		return eventRepository.findAll();
+	}
+	
+	@Override
+	public Iterable<Event> findUpcomingEvents(Iterable<Event> events){
+		
+		ArrayList<Event> Events = new ArrayList<Event>();
+		
+		LocalDate now = LocalDate.now();
+		
+		for (Event e: events) {
+			if (e.getDate().isAfter(now) || e.getDate().equals(now)) {
+				Events.add(e);
+			}
+		}
+		
+		Iterable<Event> UpcomingEvents = Events;
+		return UpcomingEvents;
+	}
+	
+	@Override
+	public Iterable<Event> findPreviousEvents(Iterable<Event> events){
+		
+		ArrayList<Event> Events = new ArrayList<Event>();
+		
+//		LocalDate now = LocalDate.now();
+		LocalDate now = LocalDate.of(2021, 05, 12);
+		
+		for (Event e: events) {
+			if (e.getDate().isBefore(now) || e.getDate().equals(now)) {
+				Events.add(e);
+			}
+		}
+		
+		Iterable<Event> UpcomingEvents = Events;
+		return UpcomingEvents;
 	}
 	
 	@Override
