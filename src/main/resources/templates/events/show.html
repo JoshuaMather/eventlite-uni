@@ -7,26 +7,42 @@
 <body>
   <div layout:fragment="content">
     
-    <br><h1><u th:text="${event.name}"></u></h1><br>
-    
-    <label><u><strong>Location:</strong></u></label>
-    <h2 th:text="${event.venue.name}"></h2><br>   
+    <br><h1 th:text="${event.name}"></h1><br> 
   
-  	<label><u><strong>Date of event:</strong></u></label>   	
-    	<p th:text="${event.date}"> Date</p>
-    	
-    <label><u><strong>Time of Event:</strong></u></label>	
-    	<p th:text="${event.time}"> Time</p>
+  	<lable><u><strong>Date of Event:</strong></u></lable>   	
+    <p th:text="${#temporals.format(event.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
     
-    <label><u><strong>Event Description:</strong></u></label>
-    <p th:text="${event.description}"></p><br>
+    <div th:if="${event.time} != null">	
+    	<lable><u><strong>Time of Event:</strong></u></lable>
+    	<p th:text="${event.time}"> Time</p>
+    </div> 
+    	
+    <label><u><strong>Location:</strong></u></label>
+    <p th:text="${event.venue.name}"></p><br>  
+    
+    <div th:if="${event.description} != null">
+   		<lable><u><strong>Event Description:</strong></u></lable>
+    	<p th:text="${event.description}">No Description</p><br>
+	</div>
+	 
+	 <!-- This is example implementation for more information
+	 <lable><u><strong>Event Description:</strong></u></lable>
+	 
+	 <span th:if="${event.description == null}">
+	 	<p> No description</p>
+	 </span>
+     
+     <span th:unless="${event.description == null}">
+     	<p th:text="${event.description}">No Description</p>
+     </span>-->
   
  	<br>
  	<table>
      <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+    
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
-	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/edit(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
-	      </div>
+	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+	 </div>
    
      </table>
      <br>
@@ -37,8 +53,6 @@
 	      </button>
 	 </form>
 	 </div>
-	 
-	
   </div>
 </body>
 </html>

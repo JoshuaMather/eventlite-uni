@@ -22,22 +22,16 @@
           <th><i class="fas fa-map-marker-alt"></i> Venue</th>
           <th><i class="fas fa-calendar"></i> Date</th>
           <th><i class="fas fa-clock"></i> Time</th>
-          <th><i class="fas fa-info"></i> Description</th>
-        
         </tr>
       </thead>
       <tbody>
         <tr th:each="e : ${events}">
-          <td th:text="${e.name}">My Event</td>
+          <td >
+          <a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">
+          </td>
           <td th:text="${e.venue.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
-          <td > 
-          	<form th:action="@{/events/{id}(id=${e.id})}" th:method="get">
-          	<button type="submit" class="btn btn-info"><i class="far fa-eye"></i> View Event</button>
-          	</form>
-          </td>
-   
         </tr>
       </tbody>
     </table>

@@ -5,7 +5,7 @@
 <body>
   <div layout:fragment="content">
 	<h1>Update Event</h1>
-	<form th:action="@{/events/{id}/edit(id=${event.id})}" th:method="post">
+	<form th:action="@{/events/{id}/update(id=${event.id})}" th:method="post">
 		<label for="event-name"><u><strong>Name</u></strong></label>
 		<input type="text" class="form-control" id="event-name" name="name" th:value="${event.name}"><br>
 		
@@ -28,7 +28,6 @@
 	      Save changes
 	    </button>
 	    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
-	  
 	</form>
   </div>
 

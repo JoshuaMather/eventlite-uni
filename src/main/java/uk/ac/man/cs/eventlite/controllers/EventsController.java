@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.Instant;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,7 @@ public class EventsController {
 	public String eventDescription(@PathVariable("id") long id, Model model) {	
 		Event event = eventService.findById(id);
 		model.addAttribute("event", event);
+		model.addAttribute("java8Instant", Instant.now());
 
 		return "events/show";
 	}
@@ -96,7 +99,7 @@ public class EventsController {
 			@Valid @ModelAttribute Event event,BindingResult result) {
 		
 		if(result.hasErrors()) {
-			return String.format("redirect:/events/%d/upate", id);
+			return String.format("redirect:/events/%d/update", id);
 		}
 		
 		eventService.save(event);
