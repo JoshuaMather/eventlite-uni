@@ -39,11 +39,15 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		// Build and save initial models here.
 		Venue v1 = new Venue();
 		v1.setName("Kilburn G23");
+		v1.setAddress("M13 9PL");
+		v1.setPostcode("M13 9PL");
 		v1.setCapacity(80);
 		venueService.save(v1);
 		
 		Venue v2 = new Venue();
 		v2.setName("Online");
+		v2.setAddress("-");
+		v2.setPostcode("-");
 		v2.setCapacity(100000);
 		venueService.save(v2);
 		
@@ -67,5 +71,31 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		e3.setTime(LocalTime.of(16, 00));
 		e3.setVenue(v2);
 		eventService.save(e3);
+		
+		Venue vC = new Venue();
+		vC.setName("Venue C");
+		vC.setAddress("19 Acacia Avenue");
+		vC.setPostcode("WA15 8QY");
+		vC.setCapacity(10);
+		venueService.save(vC);
+		
+		Venue vB = new Venue();
+		vB.setName("Venue B");
+		vB.setAddress("Highland Road");
+		vB.setPostcode("S43 2EZ");
+		vB.setCapacity(1000);
+		venueService.save(vB);
+		
+		Venue vA = new Venue();
+		vA.setName("Venue A");
+		vA.setAddress("23 Manchester Road");
+		vA.setPostcode("E14 3BD");
+		vA.setCapacity(50);
+		venueService.save(vA);
+		
+		
+		
+		
+		
 	}
 }

@@ -28,7 +28,7 @@ public class VenuesController {
 	@GetMapping
 	public String getAllVenues(Model model) {
 
-		model.addAttribute("venues", venueService.findAll());
+		model.addAttribute("venues", venueService.findAllByDesc());
 
 		return "venues/index";
 	}

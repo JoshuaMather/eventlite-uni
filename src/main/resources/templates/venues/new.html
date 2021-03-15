@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	  layout:decorate="~{layouts/default}">
+<head>
+	<title>Add new event</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<h1>Add a new event</h1>
+		<form action="#" th:action="@{/events}" th:object="${event}" method="post">
+			<table>
+			<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+	        <tr><td> <p>Name: </td> <td> <input type="text" id="name" th:field="*{name}" maxlength="255"  /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+	        <tr><td> <p>Description: </td> <td> <textarea rows="4" cols="50" id="description" th:field="*{description}" maxlength="499"></textarea></td>
+			<tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('v_id')}? has-error">
+			<tr><td> <p>Venue: </td> <td>
+	        <select th:field="*{v_id}" >
+	        	<option th:each="venue : ${venues}"
+	        		th:value="${venue.id}"
+	        		th:text="${venue.name}"></option>
+	        </select>
+	        </p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('v_id')}" th:errors="*{v_id}">errors</p></td></tr></tr>
+	        </div>
+	 
+	 		<div class="form-group" th:classappend="${#fields.hasErrors('date')}? has-error">
+	        <tr><td> <p>Date: </td> <td><input type="date" id="date" th:field="*{date}" min="" /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('time')}? has-error">
+	        <tr><td> <p>Time: </td> <td><input type="time" id="time" th:field="*{time}" /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">errors</p></td></tr></tr>
+	        </div>
+	        </table>
+	        
+	        <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
+		    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+        </form>
+        
+        <script>
+		        function tomorrowDate(){
+		       	    const today = new Date()
+					const tomorrow = new Date(today)
+					tomorrow.setDate(tomorrow.getDate() + 1)
+		        	var date = tomorrow,
+				        month = '' + (date.getMonth() + 1),
+				        day = '' + date.getDate(),
+				        year = date.getFullYear();
+				
+				    if (month.length < 2) 
+				        month = '0' + month;
+				    if (day.length < 2) 
+				        day = '0' + day;
+				    return [year, month, day].join('-');
+				}
+				
+				var minDate = String(tomorrowDate());
+				document.getElementById('date').setAttribute("min", minDate);	
+	     </script>
+    </div>
+</body>
+</html>

@@ -37,7 +37,7 @@ public class VenuesControllerApi {
 	@GetMapping
 	public CollectionModel<Venue> getAllVenues() {
 
-		return venueCollection(venueService.findAll());
+		return venueCollection(venueService.findAllByDesc());
 	}
 	
 	private CollectionModel<Venue> venueCollection(Iterable<Venue> venues) {

@@ -1,6 +1,8 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Service
@@ -29,11 +32,17 @@ public class VenueServiceImpl implements VenueService {
 	public long count() {
 		return venueRepository.count();
 	}
-
+	
+	@Override
+	public Iterable<Venue> findAllByDesc() {
+		return venueRepository.findAllByOrderByNameAsc();
+	}
+	
 	@Override
 	public Iterable<Venue> findAll() {
 		return venueRepository.findAll();
 	}
+	
 	
 	@Override
 	public Venue save(Venue v) {

@@ -21,6 +21,10 @@ public class Venue {
 
 	private int capacity;
 	
+	private String address;
+	
+	private String postcode;
+	
 	@OneToMany()
 	private List<Event> events;
 
@@ -37,6 +41,22 @@ public class Venue {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+	
+	public String getPostcode() {
+		return postcode;
 	}
 
 	public void setName(String name) {
