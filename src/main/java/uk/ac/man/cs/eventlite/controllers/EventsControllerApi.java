@@ -23,13 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
-import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
-import uk.ac.man.cs.eventlite.entities.Venue;
 
 @RestController
 @RequestMapping(value = "/api/events", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
@@ -107,5 +105,12 @@ public class EventsControllerApi {
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	
+	@GetMapping("/search")
+	public CollectionModel<Event> searchEvents(@RequestParam(value = "search", required = false) String search) {
+		Iterable<Event> event = eventService.findByNameAsc(search);
 
+		return eventCollection(event);
+	}
 } 
