@@ -25,6 +25,9 @@ public class Venue {
 	
 	private String postcode;
 	
+	private String road;
+	
+
 	@OneToMany()
 	private List<Event> events;
 
@@ -69,5 +72,13 @@ public class Venue {
 
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+	
+	public String getRoad() {
+		return road;
+	}
+
+	public void setRoad(String road) {
+		this.road = road;
 	}
 }
