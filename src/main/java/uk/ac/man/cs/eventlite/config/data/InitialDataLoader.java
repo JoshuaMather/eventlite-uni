@@ -51,26 +51,12 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		v2.setCapacity(100000);
 		venueService.save(v2);
 		
-		Event e1 = new Event();
-		e1.setName("COMP23412 Showcase, group G");
-		e1.setDate(LocalDate.of(2021, 05, 13));
-		e1.setTime(LocalTime.of(16, 00));
-		e1.setVenue(v1);
-		eventService.save(e1);
-		
-		Event e2 = new Event();
-		e2.setName("COMP23412 Showcase, group H");
-		e2.setDate(LocalDate.of(2021, 05, 11));
-		e2.setTime(LocalTime.of(11, 00));
-		e2.setVenue(v2);
-		eventService.save(e2);
-		
-		Event e3 = new Event();
-		e3.setName("COMP23412 Showcase, group F");
-		e3.setDate(LocalDate.of(2021, 05, 10));
-		e3.setTime(LocalTime.of(16, 00));
-		e3.setVenue(v2);
-		eventService.save(e3);
+		Venue v3 = new Venue();
+		v3.setName("Kilburn LF31");
+		v3.setAddress("M13 9PL");
+		v3.setPostcode("M13 9PL");
+		v3.setCapacity(50);
+		venueService.save(v3);
 		
 		Venue vC = new Venue();
 		vC.setName("Venue C");
@@ -93,9 +79,55 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		vA.setCapacity(50);
 		venueService.save(vA);
 		
+		Event e1 = new Event();
+		e1.setName("COMP23412 Showcase, group G");
+		e1.setDate(LocalDate.of(2021, 05, 13));
+		e1.setTime(LocalTime.of(16, 00));
+		e1.setVenue(v1);
+		eventService.save(e1);
 		
+		Event e2 = new Event();
+		e2.setName("COMP23412 Showcase, group H");
+		e2.setDate(LocalDate.of(2021, 05, 11));
+		e2.setTime(LocalTime.of(11, 00));
+		e2.setVenue(v2);
+		eventService.save(e2);
 		
+		Event e3 = new Event();
+		e3.setName("COMP23412 Showcase, group F");
+		e3.setDate(LocalDate.of(2021, 05, 10));
+		e3.setTime(LocalTime.of(16, 00));
+		e3.setVenue(v2);
+		eventService.save(e3);	
 		
+		Event e4 = new Event();
+		e4.setName("COMP23412 lab");
+		e4.setDate(LocalDate.of(2021, 06, 15));
+		e4.setTime(LocalTime.of(12, 00));
+		e4.setVenue(v3);
+		eventService.save(e4);	
+		
+		Event eC = new Event();
+		eC.setName("Event C");
+		eC.setDate(LocalDate.of(2021, 02, 21));
+		eC.setTime(LocalTime.of(9, 00));
+		eC.setVenue(vC);
+		eventService.save(eC);	
+		
+		Event eB = new Event();
+		eB.setName("Event B");
+		eB.setDate(LocalDate.of(2021, 07, 07));
+		eB.setTime(LocalTime.of(15, 15));
+		eB.setVenue(vB);
+		eventService.save(eB);	
+		
+		Event eA = new Event();
+		eA.setName("Event A");
+		eA.setDate(LocalDate.of(2021, 04, 17));
+		eA.setTime(LocalTime.of(11, 45));
+		eA.setVenue(vA);
+		eventService.save(eA);	
+			
 		
 	}
 }
