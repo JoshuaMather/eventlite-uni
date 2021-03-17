@@ -12,9 +12,9 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 	
 	public Iterable<Event> findAllByOrderByDateDescNameAsc();
 	
-	public Iterable<Event> findByNameContainsOrderByDateDescNameAsc(String name);
+	public Iterable<Event> findByNameContainsIgnoreCaseOrderByDateDescNameAsc(String name);
 	
-	public Iterable<Event> findByNameContainsOrderByDateAscNameAsc(String name);
+	public Iterable<Event> findByNameContainsIgnoreCaseOrderByDateAscNameAsc(String name);
 	
 	public long count();
 	
