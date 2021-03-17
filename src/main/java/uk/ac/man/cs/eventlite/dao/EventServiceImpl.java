@@ -37,12 +37,12 @@ public class EventServiceImpl implements EventService {
 	
 	@Override
 	public Iterable<Event> findByNameAsc(String name) {
-		return eventRepository.findByNameContainsOrderByDateAscNameAsc(name);
+		return eventRepository.findByNameContainsIgnoreCaseOrderByDateAscNameAsc(name);
 	}
 	
 	@Override
 	public Iterable<Event> findByNameDesc(String name) {
-		return eventRepository.findByNameContainsOrderByDateDescNameAsc(name);
+		return eventRepository.findByNameContainsIgnoreCaseOrderByDateDescNameAsc(name);
 	}
 	
 	@Override
