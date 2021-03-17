@@ -7,56 +7,35 @@
 </head>
 <body>
   <div layout:fragment="content">
-    <h1><u>Search results for:</u> <strong th:text="${param.search}"></strong></h1>
+    <h1>Search term "<strong th:text="${param.search}"></strong>" returns:</h1>
     
-    <br><br>
+    <div th:if="${eventsUpcoming.size()} > 0">	
+    <br>
     <h2>Upcoming events</h2>
-    <table class="table table-striped table-hover">
-      <thead>
-      <br>
-        <tr>
-          <th><i class="fas fa-bolt"></i>Event</th>
-          <th><i class="fas fa-map-marker-alt"></i>Venue</th>
-          <th><i class="fas fa-calendar"></i>Date</th>
-          <th><i class="fas fa-clock"></i> Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="e : ${eventsUpcoming}">
-          <td >
-          <a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">
-          </td>
-          <td th:text="${e.venue.name}">Event venue</td>
-          <td th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</td>
-          <td th:text="${{e.time}}">Event time</td>
-        </tr>
-      </tbody>
-    </table>
+        <dl th:each="e : ${eventsUpcoming}">
+          <dt><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></a></dt>
+          <dt th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</dt>
+          <dt th:text="${e.time}">Event time</dt>
+          <dt th:text="${e.venue.name}">Event venue</dt>
+        </dl>
+    </div>
     
-    <br><br>
-    
+    <div th:if="${eventsPrevious.size()} > 0">	
+    <br>
     <h2>Previous events</h2>
-    <table class="table table-striped table-hover">
-      <thead>
-      <br>
-        <tr>
-          <th><i class="fas fa-bolt"></i>Event</th>
-          <th><i class="fas fa-map-marker-alt"></i>Venue</th>
-          <th><i class="fas fa-calendar"></i>Date</th>
-          <th><i class="fas fa-clock"></i> Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="e : ${eventsPrevious}">
-          <td >
-          <a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">
-          </td>
-          <td th:text="${e.venue.name}">Event venue</td>
-          <td th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</td>
-          <td th:text="${{e.time}}">Event time</td>
-        </tr>
-      </tbody>
-    </table>
+        <dl th:each="e : ${eventsPrevious}">
+          <dt><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></a></dt>
+          <dt th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</dt>
+          <dt th:text="${e.time}">Event time</dt>
+          <dt th:text="${e.venue.name}">Event venue</dt>
+        </dl>      
+    </div>
+    
+    <div th:if="${eventsUpcoming.size()} == 0">	
+    	 <div th:if="${eventsPrevious.size()} == 0">
+    	 <h3>There are no results found for your search.</h3>
+    	 </div>
+    </div>
     
     <a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
   </div>
