@@ -26,7 +26,8 @@ public class Security extends WebSecurityConfigurerAdapter {
 	private static final RequestMatcher[] NO_AUTH = { new AntPathRequestMatcher("/webjars/**", "GET"),
 			new AntPathRequestMatcher("/h2-console/**"), new AntPathRequestMatcher("/events/{id:[\\d]+}", "GET"), 
 			new AntPathRequestMatcher("/events", "GET"), new AntPathRequestMatcher("/events/show", "GET"),
-			new AntPathRequestMatcher("/events/search", "GET"), new AntPathRequestMatcher("/api/**", "GET")  };
+			new AntPathRequestMatcher("/events/search", "POST"),
+			new AntPathRequestMatcher("/events/search/*", "GET"), new AntPathRequestMatcher("/api/**", "GET")  };
 
 
 	@Override

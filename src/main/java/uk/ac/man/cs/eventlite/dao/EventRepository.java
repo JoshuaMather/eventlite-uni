@@ -12,6 +12,10 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 	
 	public Iterable<Event> findAllByOrderByDateDescNameAsc();
 	
+	public Iterable<Event> findByNameContainsOrderByDateDescNameAsc(String name);
+	
+	public Iterable<Event> findByNameContainsOrderByDateAscNameAsc(String name);
+	
 	public long count();
 	
 	@SuppressWarnings("unchecked")
@@ -19,4 +23,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 	
 
 	public Event findById(long id);
+	
+	public Iterable<Event> findAllByNameContains(String name);
 }

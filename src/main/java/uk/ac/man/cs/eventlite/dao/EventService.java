@@ -16,11 +16,17 @@ public interface EventService {
 	
 	public Iterable<Event> findPreviousEvents(Iterable<Event> events);
 	
+	public Iterable<Event> findByNameAsc(String name);
+	
+	public Iterable<Event> findByNameDesc(String name);
+	
 	public Event save(Event e);
 
 	public void deleteById(long id);
 	
 	public Event findById(long id);
+	
+	public Iterable<Event> findByName(String id);
 	
 }
 

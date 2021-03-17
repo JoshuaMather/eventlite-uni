@@ -36,6 +36,16 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
+	public Iterable<Event> findByNameAsc(String name) {
+		return eventRepository.findByNameContainsOrderByDateAscNameAsc(name);
+	}
+	
+	@Override
+	public Iterable<Event> findByNameDesc(String name) {
+		return eventRepository.findByNameContainsOrderByDateDescNameAsc(name);
+	}
+	
+	@Override
 	public Iterable<Event> findUpcomingEvents(Iterable<Event> events){
 		
 		ArrayList<Event> Events = new ArrayList<Event>();
@@ -82,6 +92,11 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public Event findById(long id) {
 		return eventRepository.findById(id);
+	}
+	
+	@Override
+	public Iterable<Event> findByName(String name) {
+		return eventRepository.findAllByNameContains(name);
 	}
 	
 }
