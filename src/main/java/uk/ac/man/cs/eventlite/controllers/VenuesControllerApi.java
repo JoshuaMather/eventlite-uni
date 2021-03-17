@@ -45,6 +45,24 @@ public class VenuesControllerApi {
 
 		return CollectionModel.of(venues, selfLink);
 	}
+	
+	@GetMapping("/new")
+	public ResponseEntity<?> newVenue() {
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	}
+	
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createVenue(@RequestBody @Valid Venue venue, BindingResult result) {
+
+		if (result.hasErrors()) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+
+		venueService.save(venue);
+		URI location = linkTo(EventsControllerApi.class).slash(venue.getId()).toUri();
+
+		return ResponseEntity.created(location).build();
+	}
 
 
 } 

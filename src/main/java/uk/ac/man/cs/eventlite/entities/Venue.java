@@ -9,6 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Venue {
@@ -17,14 +20,20 @@ public class Venue {
 	@GeneratedValue
 	private long venue_id;
 
+	@NotEmpty(message = "The venue name cannot be empty.")
+	@Size(max = 255, message = "The venue name must have 255 characters or less.")
 	private String name;
 
+	@Min(value = 0, message = "The venue capacity must be a positive integer.")
 	private int capacity;
 	
 	private String address;
 	
+	@NotEmpty(message = "The venue postcode cannot be empty.")
 	private String postcode;
 	
+	@NotEmpty(message = "The venue road name cannot be empty.")
+	@Size(max = 299, message = "The venue road name must have 299 characters or less.")
 	private String road;
 	
 
