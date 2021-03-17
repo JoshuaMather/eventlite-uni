@@ -16,7 +16,7 @@
 	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p></td></tr></tr>
 	        </div>
 	        
-	        <tr><td>Address</td></tr>
+	        <tr><td><b>Address</b></td></tr>
 	        
 	        <div class="form-group" th:classappend="${#fields.hasErrors('road')}? has-error">
 	        <tr><td> <p>Road name: </td> <td> <input type="text" id="road" th:field="*{road}" maxlength="299"  /></p> </td>
@@ -29,7 +29,7 @@
 	        </div>
 	        
 	        <div class="form-group" th:classappend="${#fields.hasErrors('capacity')}? has-error">
-	        <tr><td> <p>Capacity: </td> <td> <input type="number" id="capacity" th:field="*{capacity}" min=""  /></p> </td>
+	        <tr><td> <p>Capacity: </td> <td> <input type="number" id="capacity" th:field="*{capacity}" min="0"  required/></p> </td>
 			<tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">errors</p></td></tr></tr>
 	        </div>
 	        

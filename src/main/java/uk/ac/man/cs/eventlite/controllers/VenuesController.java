@@ -35,7 +35,7 @@ public class VenuesController {
 	}
 	
 	@GetMapping("/new")
-	public String newEvent(Model model) {
+	public String newVenue(Model model) {
 		if (!model.containsAttribute("venue")) {
 			model.addAttribute("venue", new Venue());
 		}

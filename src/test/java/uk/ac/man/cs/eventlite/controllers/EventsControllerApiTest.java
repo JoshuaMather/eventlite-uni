@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -219,9 +220,12 @@ public class EventsControllerApiTest {
 
 		LocalDate date = LocalDate.of(2099, 3, 10);
 		Venue venue = new Venue();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+		String localtime = LocalTime.now().format(dtf);
+		
 		mvc.perform(post("/api/events").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{ \"name\": \"test\",  \"date\": \""+date.toString()+"\", \"v_id\": \""+String.valueOf(venue.getId())+"\"}")
+				.content("{ \"name\": \"test\",  \"date\": \""+date.toString()+"\", \"v_id\": \""+String.valueOf(venue.getId())+"\", \"description\": \"description\", \"time\": \""+localtime+"\"}")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(content().string(""))
 				.andExpect(header().string("Location", containsString("/api/events/")))
 				.andExpect(handler().methodName("createEvent"));
@@ -230,7 +234,8 @@ public class EventsControllerApiTest {
 		assertThat("test", equalTo(arg.getValue().getName()));
 		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
 		assertThat(String.valueOf(venue.getId()), equalTo(String.valueOf(arg.getValue().getId())));
-	
+		assertThat("description", equalTo(arg.getValue().getDescription()));
+		assertThat(localtime, equalTo(arg.getValue().getTime().toString()));
 	}
 	
 }

@@ -23,6 +23,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -226,9 +228,13 @@ public class EventsControllerTest {
 		
 		LocalDate date = LocalDate.of(2099, 3, 10);
 		Venue venue = new Venue();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+		String localtime = LocalTime.now().format(dtf);
+		
 		mvc.perform(post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("name", "test").param("date", date.toString())
 				.param("v_id", String.valueOf(venue.getId()))
+				.param("description", "description").param("time", localtime)
 				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound()).andExpect(content().string(""))
 				.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
 				.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
@@ -237,6 +243,8 @@ public class EventsControllerTest {
 		assertThat("test", equalTo(arg.getValue().getName()));
 		assertThat(date.toString(), equalTo(arg.getValue().getDate().toString()));
 		assertThat(String.valueOf(venue.getId()), equalTo(String.valueOf(arg.getValue().getV_id())));
+		assertThat("description", equalTo(arg.getValue().getDescription()));
+		assertThat(localtime, equalTo(arg.getValue().getTime().toString()));
 	}
 
 }
