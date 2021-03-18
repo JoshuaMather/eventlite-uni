@@ -28,11 +28,11 @@
       <tbody>
         <tr th:each="v : ${venues}">
           <td >
-          <a th:href="@{/venues/{name}(name=${v.name})}" th:text="${v.name}">
+          <a th:href="@{/venues/{id}(id=${v.id})}" th:text="${v.name}">
           </td>
           <td th:text="${v.road}">Venue Road</td>
-          <td th:text="${{v.postcode}}">Venue time</td>
-          <td th:text="${{v.capacity}}">Venue capacity</td>
+          <td th:text="${v.postcode}">Venue time</td>
+          <td th:text="${v.capacity}">Venue capacity</td>
         </tr>
       </tbody>
     </table>

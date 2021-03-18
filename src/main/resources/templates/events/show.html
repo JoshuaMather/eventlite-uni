@@ -18,7 +18,7 @@
     </div> 
     	
     <label><u><strong>Location:</strong></u></label>
-    <p th:text="${event.venue.name}"></p> 
+    <p> <a th:href="@{/venues/{id}(id=${event.venue.id})}" th:text="${event.venue.name}"></a></p>
     
     <div th:if="${event.description != ''}">
    		<lable><u><strong>Event Description:</strong></u></lable>

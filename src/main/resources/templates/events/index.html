@@ -69,20 +69,18 @@
       <thead>
       <br><br>
         <tr>
-          <th><i class="fas fa-bolt"></i>Event</th>
-          <th><i class="fas fa-map-marker-alt"></i>Venue</th>
-          <th><i class="fas fa-calendar"></i>Date</th>
-          <th><i class="fas fa-clock"></i> Time</th>
+          <th style="width : 43.66%"><i class="fas fa-bolt"></i>Event</th>
+          <th style="width : 16.14%"><i class="fas fa-calendar"></i>Date</th>
+          <th style="width : 16.20%"><i class="fas fa-clock"></i> Time</th>
+          <th style="width : 25.00%"><i class="fas fa-map-marker-alt"></i>Venue</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="e : ${eventsUpcoming}">
-          <td >
-          <a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">
-          </td>
-          <td th:text="${e.venue.name}">Event venue</td>
+          <td><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></td>
           <td th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+          <td><a th:href="@{/venues/{id}(id=${e.venue.id})}" th:text="${e.venue.name}"></a></td>
         </tr>
       </tbody>
     </table>
@@ -92,20 +90,18 @@
       <thead>
       <br><br>
         <tr>
-          <th><i class="fas fa-bolt"></i>Event</th>
-          <th><i class="fas fa-map-marker-alt"></i>Venue</th>
-          <th><i class="fas fa-calendar"></i>Date</th>
-          <th><i class="fas fa-clock"></i> Time</th>
+          <th style="width : 43.66%"><i class="fas fa-bolt"></i>Event</th>
+          <th style="width : 16.14%"><i class="fas fa-calendar"></i>Date</th>
+          <th style="width : 16.20%"><i class="fas fa-clock"></i> Time</th>
+          <th style="width : 25.00%"><i class="fas fa-map-marker-alt"></i>Venue</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="e : ${eventsPrevious}">
-          <td >
-          <a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">
-          </td>
-          <td th:text="${e.venue.name}">Event venue</td>
+          <td><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></td>
           <td th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+          <td><a th:href="@{/venues/{id}(id=${e.venue.id})}" th:text="${e.venue.name}"></a></td>
         </tr>
       </tbody>
     </table>

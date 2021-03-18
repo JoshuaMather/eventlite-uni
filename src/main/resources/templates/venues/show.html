@@ -7,37 +7,31 @@
 <body>
   <div layout:fragment="content">
     
-    <br><h1 th:text="${event.name}"></h1><br> 
-  
-  	<lable><u><strong>Date of Event:</strong></u></lable>   	
-    <p th:text="${#temporals.format(event.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
+    <br><h1 th:text="${venue.name}"></h1>
+   
+    <dl>
+       <dt th:text="${venue.road}"> Street</dt>
+       <dt th:text="${venue.postcode}"> Postcode</dt>
+       <dt> Capacity: <strong th:text="${venue.capacity}"></strong></dt>
+    </dl>
     
-    <div th:if="${event.time} != null">	
-    	<lable><u><strong>Time of Event:</strong></u></lable>
-    	<p th:text="${event.time}"> Time</p>
-    </div> 
-    	
-    <label><u><strong>Location:</strong></u></label>
-    <p th:text="${event.venue.name}"></p> 
+    <div th:if="${eventsUpcoming.size()} > 0">	
+    <br>
+    <h2>Upcoming events</h2>
+        <dl th:each="e : ${eventsUpcoming}">
+          <dt><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></a></dt>
+          <dt th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}">Event date</dt>
+          <dt th:text="${e.time}">Event time</dt>
+          <dt th:text="${e.venue.name}">Event venue</dt>
+        </dl>
+    </div>
     
-    <div th:if="${event.description} != null">
-   		<lable><u><strong>Event Description:</strong></u></lable>
-    	<p th:text="${event.description}">No Description</p><br>
-	</div>
-	 
-	 <!-- This is example implementation for more information
-	 <lable><u><strong>Event Description:</strong></u></lable>
-	 
-	 <span th:if="${event.description == null}">
-	 	<p> No description</p>
-	 </span>
-     
-     <span th:unless="${event.description == null}">
-     	<p th:text="${event.description}">No Description</p>
-     </span>-->
-  
- 	<table>
-     <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+    <br>
+    
+  	<a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
+    
+ 	<!-- <table>
+     <td><a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
     
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
@@ -52,7 +46,7 @@
 	      Delete
 	      </button>
 	 </form>
-	 </div>
+	 </div> -->
   </div>
 </body>
 </html>
