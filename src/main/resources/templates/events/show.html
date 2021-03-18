@@ -20,10 +20,12 @@
     <label><u><strong>Location:</strong></u></label>
     <p th:text="${event.venue.name}"></p> 
     
-    <div th:if="${event.description} != null">
+    <div th:if="${event.description != ''}">
    		<lable><u><strong>Event Description:</strong></u></lable>
-    	<p th:text="${event.description}">No Description</p><br>
+    	<p th:text="${event.description}">No Description</p>
 	</div>
+	 
+	 <br>
 	 
 	 <!-- This is example implementation for more information
 	 <lable><u><strong>Event Description:</strong></u></lable>
