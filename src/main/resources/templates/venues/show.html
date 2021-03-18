@@ -27,9 +27,18 @@
     </div>
     
     <br>
-    
+   
   	<a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
-    
+  	<br>
+  
+  	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	 <form th:action = "@{/venues/{num}(num=${venue.id})}" th:method="delete">
+	      <button class="btn btn-danger" type="submit"> <i class="fa fa-trash-alt" aria-hidden="true"></i>
+	      Delete
+	      </button>
+	 </form>
+	 </div>
+     
  	<!-- <table>
      <td><a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
     

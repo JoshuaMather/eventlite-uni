@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,6 +76,22 @@ public class VenuesController {
 		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(venue.getEvents()));
 
 		return "venues/show";
+	}
+	
+	@DeleteMapping("/{id}")
+	public String deleteVenueById(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
+		if (((List<Event>) (venueService.findById(id)).getEvents()).size()==0) {
+			
+			venueService.deleteById(id);
+			redirectAttrs.addFlashAttribute("error_message", "Venue unoccupied, deletion failed!");
+		   	
+		} else {
+			
+			redirectAttrs.addFlashAttribute("ok_message", "Venue occupied, venue deleted");
+			
+		}
+		return "redirect:/venues";
+		
 	}
 	
 
