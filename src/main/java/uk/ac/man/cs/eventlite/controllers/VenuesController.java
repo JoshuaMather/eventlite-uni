@@ -82,7 +82,7 @@ public class VenuesController {
 	public String deleteVenueById(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
 			
 		venueService.deleteById(id);
-			
+		redirectAttrs.addFlashAttribute("ok_message", "Venue deleted.");
 		return "redirect:/venues";
 		
 	}

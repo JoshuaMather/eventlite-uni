@@ -74,8 +74,9 @@ public class EventsController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteEventById(@PathVariable Long id) {
+	public String deleteEventById(@PathVariable Long id, RedirectAttributes redirectAttrs) {
 		eventService.deleteById(id);
+		redirectAttrs.addFlashAttribute("ok_message", "Event deleted.");
 		return "redirect:/events";
 	}
 	
