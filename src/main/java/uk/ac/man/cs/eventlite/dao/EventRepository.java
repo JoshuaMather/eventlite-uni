@@ -25,4 +25,5 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 	public Event findById(long id);
 	
 	public Iterable<Event> findAllByNameContains(String name);
+	
 }

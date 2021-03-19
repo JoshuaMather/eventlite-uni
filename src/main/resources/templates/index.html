@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EventLite Home</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/webjars/font-awesome/css/all.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>EventLite</h1>
+
+    <p>This is EventLite.</p> 
+    <p>See the <a href="/events">list of events</a> for more information.</p>
+    <p>See the <a href="/venues">list of venues</a> for more information.</p>
+  
+  	<h1>Upcoming events</h1>
+  	<div class="row">
+  		<div class="col-md-4" th:each="e : ${threeUpcomingEvents}">
+  			<div><i class="fas fa-bolt"></i> Event</div>
+  			<div><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}"></a></div>
+  			<div><i class="fas fa-calendar"></i> Date</div>
+  			<div th:text="${#temporals.format(e.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"><a th:href="@{/events/{id}(id=${e.id})}" th:text="${e.name}">Event date</div>
+  			<div><i class="fas fa-clock"></i> Time</div>
+  			<div th:text="${{e.time}}">Event time</td></div>
+  			<div><i class="fas fa-map-marker-alt"></i> Location</div>
+  			<div ><a th:href="@{/venues/{id}(id=${e.venue.id})}" th:text="${e.venue.name}"></a></div>
+  		</div>
+  	</div>
+    <br></br>
+    <h1>Popular Venues</h1>
+     <div class="row">
+  		<div class="col-md-4" th:each="v : ${topThreeVenues}">
+  			<div><i class="fas fa-bolt"></i> Venue</div>
+  			<div><a th:href="@{/venues/{id}(id=${v.id})}" th:text="${v.name}"></a></div>
+  			<div><i class="fas fa-map-marker-alt"></i> Road Name</div>
+  			<div th:text="${v.Road}"></div>
+  			<div><i class="fas fa-clock"></i> Time</div>
+  			<div th:text="${v.postcode}">Post Code</td></div>
+  			<div><i class="fas fa-hashtag"></i> Capacity</div>
+  			<div th:text="${v.capacity}"></div>
+  		</div>
+  	  </div>
+  
+  
+  </div>
+
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/popper.js/umd/popper.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

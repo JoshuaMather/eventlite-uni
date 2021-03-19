@@ -28,5 +28,7 @@ public interface EventService {
 	
 	public Iterable<Event> findByName(String id);
 	
+	public Iterable<Event> findThreeUpcomingEvents(Iterable<Event> events);
+	
 }
 
