@@ -80,16 +80,9 @@ public class VenuesController {
 	
 	@DeleteMapping("/{id}")
 	public String deleteVenueById(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
-		if (((List<Event>) (venueService.findById(id)).getEvents()).size()==0) {
 			
-			venueService.deleteById(id);
-			redirectAttrs.addFlashAttribute("error_message", "Venue unoccupied, deletion failed!");
-		   	
-		} else {
+		venueService.deleteById(id);
 			
-			redirectAttrs.addFlashAttribute("ok_message", "Venue occupied, venue deleted");
-			
-		}
 		return "redirect:/venues";
 		
 	}
