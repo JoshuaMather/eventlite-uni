@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
+<head>
+	<title>Update an event</title>
+</head>
 
 <body>
   <div layout:fragment="content">
@@ -17,10 +20,11 @@
 		</select>
 		
 		<label for="event-date"><u><strong>Date</u></strong></label>
-		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}"><br>
+		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}" min=""><br>
 		
 		<label for="event-time"><u><strong>Time</u></strong></label>
 		<input type="time" class="form-control" id="event-time" name="time" th:value="${event.time}"><br>
+		
 		
 		<label for="event-description"><u><strong>Description</u></strong></label>
 		<input type="description" class="form-control" id="event-description" name="description" th:value="${event.description}"><br>
@@ -31,6 +35,27 @@
 	    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
 	</form>
   </div>
+  
+   <script>
+		        function tomorrowDate(){
+		       	    const today = new Date()
+					const tomorrow = new Date(today)
+					tomorrow.setDate(tomorrow.getDate() + 1)
+		        	var date = tomorrow,
+				        month = '' + (date.getMonth() + 1),
+				        day = '' + date.getDate(),
+				        year = date.getFullYear();
+				
+				    if (month.length < 2) 
+				        month = '0' + month;
+				    if (day.length < 2) 
+				        day = '0' + day;
+				    return [year, month, day].join('-');
+				}
+				
+				var minDate = String(tomorrowDate());
+				document.getElementById('event-date').setAttribute("min", minDate);	
+	     </script>
 
 </body>
 </html>
