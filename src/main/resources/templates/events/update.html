@@ -12,7 +12,8 @@
 		<label for="event-venue"><u><strong>Venue</u></strong></label>
 		
 		<select class="form-control" id="event-venue" name="venue.id">
-			<option th:each="venue : ${venues}" th:value="${venue.id}" th:text="${venue.name}"></option>
+			<option th:each="venue : ${venues}" th:value="${venue.id}" 
+			th:text="${venue.name}" th:selected="${venue.name==event.venue.name}" ></option>
 		</select>
 		
 		<label for="event-date"><u><strong>Date</u></strong></label>
