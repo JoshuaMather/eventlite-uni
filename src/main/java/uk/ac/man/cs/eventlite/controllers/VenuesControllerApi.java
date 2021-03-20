@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -86,5 +87,10 @@ public class VenuesControllerApi {
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/search")
+	public CollectionModel<Venue> searchVenues(@RequestParam(value = "search", required = false) String search) {
+		Iterable<Venue> venues = venueService.findByNameAsc(search);
 
+		return venueCollection(venues);
+	}
 } 

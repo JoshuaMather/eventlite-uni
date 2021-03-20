@@ -43,6 +43,16 @@ public class VenueServiceImpl implements VenueService {
 		return venueRepository.findAll();
 	}
 	
+	@Override
+	public Iterable<Venue> findByNameAsc(String name) {
+		return venueRepository.findByNameContainsIgnoreCaseOrderByDateAscNameAsc(name);
+	}
+	
+	@Override
+	public Iterable<Venue> findByNameDesc(String name) {
+		return venueRepository.findByNameContainsIgnoreCaseOrderByDateDescNameAsc(name);
+	}
+	
 	
 	@Override
 	public Venue save(Venue v) {

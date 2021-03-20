@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.bytebuddy.asm.Advice.OffsetMapping.Sort;
@@ -92,6 +93,14 @@ public class VenuesController {
 		}
 		return "redirect:/venues";
 		
+	}
+	
+	@GetMapping("/search")
+	public String searchVenue(Model model, @RequestParam(value = "search", required = true) String search) {
+		Iterable<Venue> venues = venueService.findByNameAsc(search);	
+		model.addAttribute("venues", venues);
+			
+		return "/venues/search";
 	}
 	
 
