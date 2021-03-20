@@ -9,6 +9,7 @@
   <div layout:fragment="content">
 	<h1>Update Event</h1>
 	<form th:action="@{/events/{id}/update(id=${event.id})}" th:method="post">
+	    
 		<label for="event-name"><u><strong>Name</u></strong></label>
 		<input type="text" class="form-control" id="event-name" name="name" th:value="${event.name}"><br>
 		
@@ -20,8 +21,8 @@
 		</select>
 		
 		<label for="event-date"><u><strong>Date</u></strong></label>
-		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}" min=""><br>
-		
+		<input type="date" class="form-control" id="date" name="date" th:value="${event.date.toString()}" min=""><br>
+				
 		<label for="event-time"><u><strong>Time</u></strong></label>
 		<input type="time" class="form-control" id="event-time" name="time" th:value="${event.time}"><br>
 		
@@ -34,7 +35,6 @@
 	    </button>
 	    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
 	</form>
-  </div>
   
   
    <script>    
@@ -55,11 +55,12 @@
 				}
 				
 				var minDate = String(tomorrowDate());
-				document.getElementById('event-date').setAttribute("min", minDate);	
+				document.getElementById('date').setAttribute("min", minDate);	
 				
 						
 				
 	</script>
+	</div>
 
 </body>
 </html>
