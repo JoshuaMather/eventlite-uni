@@ -20,7 +20,7 @@
 		</select>
 		
 		<label for="event-date"><u><strong>Date</u></strong></label>
-		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}" min=""><br>
+		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}" min=""/><br>
 		
 		<label for="event-time"><u><strong>Time</u></strong></label>
 		<input type="time" class="form-control" id="event-time" name="time" th:value="${event.time}"><br>
@@ -36,8 +36,9 @@
 	</form>
   </div>
   
-   <script>
-		        function tomorrowDate(){
+  
+   <script>    
+		    function tomorrowDate(){
 		       	    const today = new Date()
 					const tomorrow = new Date(today)
 					tomorrow.setDate(tomorrow.getDate() + 1)
@@ -55,7 +56,10 @@
 				
 				var minDate = String(tomorrowDate());
 				document.getElementById('event-date').setAttribute("min", minDate);	
-	     </script>
+				
+						
+				
+	</script>
 
 </body>
 </html>
