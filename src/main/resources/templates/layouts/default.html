@@ -20,13 +20,13 @@
 
   		<div class="collapse navbar-collapse">
     		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      			<li class="nav-item active">
+      			<li class="nav-item" id="Home">
         			<a class="nav-link" href="/">Home</a>
       			</li>
-      			<li class="nav-item">
+      			<li class="nav-item" id="listEvents">
         			<a class="nav-link" href="/events">List of Events</a>
       			</li>
-      			<li class="nav-item">
+      			<li class="nav-item" id="listVenues">
         			<a class="nav-link" href="/venues">List of Venues</a>
       			</li>
     		</ul>
@@ -43,7 +43,7 @@
       			</form>
     		</div>
       			
-    		<form id='events' class="form-inline my-2 my-lg-0" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
+    		<form style="display:none;" id='events' class="form-inline my-2 my-lg-0" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
 	  			<input class="form-control mr-sm-2" type="text" placeholder="Search event" name="search">
 	  			<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
     		</form>
@@ -53,6 +53,16 @@
   </header>
 
   <div class="container">
+    <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
+  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+  	<span th:text="${ok_message}">SUCCESS!</span>
+  </div>
+  
+  <div class="alert alert-danger alert-dismissible" role="alert" th:if="${error_message}">
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+  	<span th:text="${error_message}">ERROR!</span>
+  </div>
+  
 
     <div layout:fragment="content">
       Main page body goes here...
@@ -60,9 +70,16 @@
   </div>
 	
   <script>
-  	if (!/events/.test(window.location.href)) {
-		document.getElementById('events').style.display = 'none';
+  	if (/events/.test(window.location.href)) {
+		document.getElementById('events').style.display = 'block';
+		document.getElementById('listEvents').className = 'nav-item active';
+	} else if (/venues/.test(window.location.href)){
+		document.getElementById('listVenues').className = 'nav-item active';
+	} else{
+		document.getElementById('Home').className = 'nav-item active';
 	}
+	
+
   </script>
   <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/webjars/popper.js/umd/popper.min.js"></script>
