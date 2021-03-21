@@ -45,14 +45,8 @@ public class VenueServiceImpl implements VenueService {
 	
 	@Override
 	public Iterable<Venue> findByNameAsc(String name) {
-		return venueRepository.findByNameContainsIgnoreCaseOrderByDateAscNameAsc(name);
+		return venueRepository.findByNameContainsIgnoreCaseOrderByNameAsc(name);
 	}
-	
-	@Override
-	public Iterable<Venue> findByNameDesc(String name) {
-		return venueRepository.findByNameContainsIgnoreCaseOrderByDateDescNameAsc(name);
-	}
-	
 	
 	@Override
 	public Venue save(Venue v) {

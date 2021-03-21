@@ -11,20 +11,24 @@
 		
 		form.example{text-align: center;}
 		
+		.search{
+			margin-top : 25px;
+		}
+		
 		/* Style the search field */
 		form.example input[type=text] {
 		  padding: 10px;
 		  font-size: 17px;
 		  border: 1px solid grey;
-		  float: center;
-		  width: 20%;
+		  float: right;
+		  width: 60%;
 		  background: #f1f1f1;
 		}
 		
 		/* Style the submit button */
 		form.example button {
-		  float: center;
-		  width: 5%;
+		  float: right;
+		  width: 15%;
 		  padding: 10px;
 		  background: #2196F3;
 		  color: white;
@@ -50,16 +54,23 @@
 </head>
 <body>
   <div layout:fragment="content">
-  
-  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  
-  	<form class="example" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
-	  <input type="text" placeholder="Search event" name="search">
-	  <button type="submit"><i class="fa fa-search"></i></button>
-	</form>
+    <table width="100%" class="search">
+    <tr>
+    	<th>
+    	<h1>Upcoming events</h1>
+    	</th>
+    	<th>
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	  	<form class="example" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
+		  <input type="text" placeholder="Search event" name="search">
+		  <button type="submit"><i class="fa fa-search"></i></button>
+		</form>
+		</th>
+	</tr>
+	</table>
     
-    <h1>Upcoming events</h1>
     <table class="table table-striped table-hover">
+    
     	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	    	<tr>
 	     		<a class="btn btn-primary" role="button" href="events/new"><i class="fas fa-plus" aria-hidden="true"></i> 

@@ -4,11 +4,52 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>All Venues</title>
+  <style>
+	  .search{
+				margin-top : 25px;
+			}
+	/* Style the search field */
+		form.example input[type=text] {
+		  padding: 10px;
+		  font-size: 17px;
+		  border: 1px solid grey;
+		  float: right;
+		  width: 60%;
+		  background: #f1f1f1;
+		}
+		
+		/* Style the submit button */
+		form.example button {
+		  float: right;
+		  width: 15%;
+		  padding: 10px;
+		  background: #2196F3;
+		  color: white;
+		  font-size: 17px;
+		  border: 1px solid grey;
+		  margin-left: -5px;
+		  border-left: none; /* Prevent double borders */
+		  cursor: pointer;
+		}
+	</style>
 </head>
 <body>
 
   <div layout:fragment="content">
-    <h1>All Venues</h1>
+    <table width="100%" class="search">
+    <tr>
+    	<th>
+    	<h1>All Venues</h1>
+    	</th>
+    	<th>
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	  	<form class="example" th:action="@{/venues/search/{name}(name=${text})}" th:method="get">
+		  <input type="text" placeholder="Search venues" name="search">
+		  <button type="submit"><i class="fa fa-search"></i></button>
+		</form>
+		</th>
+	</tr>
+	</table>
     <table class="table table-striped table-hover">
     	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	    	<tr>

@@ -12,9 +12,7 @@ public interface VenueService {
 	public Iterable<Venue> findAllByDesc();
 	
 	public Iterable<Venue> findByNameAsc(String name);
-	
-	public Iterable<Venue> findByNameDesc(String name);
-	
+		
     @SuppressWarnings("unchecked")
 	public Venue save(Venue v);
     

@@ -7,6 +7,7 @@
 </head>
 <body>
   <div layout:fragment="content">
+  	<br>
     <h1>Search term "<strong th:text="${param.search}"></strong>" returns:</h1>
     
     <div th:if="${eventsUpcoming.size()} > 0">	
