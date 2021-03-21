@@ -11,37 +11,59 @@
   <link rel="stylesheet" href="/webjars/font-awesome/css/all.min.css" />
 </head>
 <body>
+  <header>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  		<a class="navbar-brand" href="/">Eventlite</a>
+  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    		<span class="navbar-toggler-icon"></span>
+  		</button>
+
+  		<div class="collapse navbar-collapse">
+    		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      			<li class="nav-item active">
+        			<a class="nav-link" href="/">Home</a>
+      			</li>
+      			<li class="nav-item">
+        			<a class="nav-link" href="/events">List of Events</a>
+      			</li>
+      			<li class="nav-item">
+        			<a class="nav-link" href="/venues">List of Venues</a>
+      			</li>
+    		</ul>
+    		      			
+        	<div sec:authorize="!isAuthenticated()">
+      			<a class="btn btn-primary" role="button" th:href="@{/sign-in}">
+        			<i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
+      			</a>
+    		</div>
+    		<div sec:authorize="isAuthenticated()">
+      			<form th:action="@{/sign-out}" method="post">
+        			<i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span>
+        			<button type="submit" class="btn btn-warning"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
+      			</form>
+    		</div>
+      			
+    		<form id='events' class="form-inline my-2 my-lg-0" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
+	  			<input class="form-control mr-sm-2" type="text" placeholder="Search event" name="search">
+	  			<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+    		</form>
+  		</div>
+	</nav>
+
+  </header>
 
   <div class="container">
-  <!-- flash attributes -->
-  <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
-  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
-  	<span th:text="${ok_message}">SUCCESS!</span>
-  </div>
-  
-  <div class="alert alert-danger alert-dismissible" role="alert" th:if="${error_message}">
-  	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
-  	<span th:text="${error_message}">ERROR!</span>
-  </div>
-  
-    <div sec:authorize="!isAuthenticated()">
-      <i class="fas fa-user-slash" aria-hidden="true"></i> Not signed in
-      <a class="btn btn-primary" role="button" th:href="@{/sign-in}">
-        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
-      </a>
-    </div>
-    <div sec:authorize="isAuthenticated()">
-      <form th:action="@{/sign-out}" method="post">
-        <i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span>
-        <button type="submit" class="btn btn-warning"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
-      </form>
-    </div>
 
     <div layout:fragment="content">
       Main page body goes here...
     </div>
   </div>
-
+	
+  <script>
+  	if (!/events/.test(window.location.href)) {
+		document.getElementById('events').style.display = 'none';
+	}
+  </script>
   <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/webjars/popper.js/umd/popper.min.js"></script>
   <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
 <head>
   <title>EventLite Home</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -10,12 +12,7 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>EventLite</h1>
-
-    <p>This is EventLite.</p> 
-    <p>See the <a href="/events">list of events</a> for more information.</p>
-    <p>See the <a href="/venues">list of venues</a> for more information.</p>
+  <div layout:fragment="content">
   
   	<h1>Upcoming events</h1>
   	<div class="row">

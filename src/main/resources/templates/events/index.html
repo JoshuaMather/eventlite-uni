@@ -52,11 +52,6 @@
   <div layout:fragment="content">
   
   	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  
-  	<form class="example" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
-	  <input type="text" placeholder="Search event" name="search">
-	  <button type="submit"><i class="fa fa-search"></i></button>
-	</form>
     
     <h1>Upcoming events</h1>
     <table class="table table-striped table-hover">
