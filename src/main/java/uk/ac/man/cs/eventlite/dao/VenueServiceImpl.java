@@ -62,4 +62,29 @@ public class VenueServiceImpl implements VenueService {
 	public void deleteById(long id) {
 		venueRepository.deleteById(id);
 	}
+	
+	@Override
+	public Iterable<Venue> findTopThreeVenues(Iterable<Venue> venues){
+		ArrayList<Venue> temp = new ArrayList<Venue>();
+		
+		for (Venue v: venues) {
+			temp.add(v);
+		}
+		
+		sort(temp);
+		
+		if (temp.size()<3) {
+			Iterable<Venue> top3 = temp;
+			return  top3;
+		}
+		Iterable<Venue> top3 = new ArrayList<Venue>(temp.subList(temp.size() -3, temp.size()));
+		return  top3;
+	}
+	
+    public static void sort(ArrayList<Venue> list) 
+    { 
+  
+        list.sort((v1, v2) 
+                      -> Integer.compare(((List<Event>) v1.getEvents()).size(), ((List<Event>) v2.getEvents()).size())); 
+    } 
 }

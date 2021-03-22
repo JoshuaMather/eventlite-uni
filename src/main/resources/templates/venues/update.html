@@ -1,35 +1,46 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
+<head>
+	<title>Update a venue</title>
+</head>
 
 <body>
-  <div layout:fragment="content">
-	<h1>Update Event</h1>
-	<form th:action="@{/events/{id}/update(id=${event.id})}" th:method="post">
-		<label for="event-name"><u><strong>Name</u></strong></label>
-		<input type="text" class="form-control" id="event-name" name="name" th:value="${event.name}"><br>
+	<div layout:fragment="content">
+		<h1>Update Venue</h1>
+		<form th:action="@{/venues/{id}/update(id=${venue.id})}" th:object="${venue}" th:method="post">
 		
-		<label for="event-venue"><u><strong>Venue</u></strong></label>
-		
-		<select class="form-control" id="event-venue" name="venue.id">
-			<option th:each="venue : ${venues}" th:value="${venue.id}" th:text="${venue.name}"></option>
-		</select>
-		
-		<label for="event-date"><u><strong>Date</u></strong></label>
-		<input type="date" class="form-control" id="event-date" name="date" th:value="${event.date.toString()}"><br>
-		
-		<label for="event-time"><u><strong>Time</u></strong></label>
-		<input type="time" class="form-control" id="event-time" name="time" th:value="${event.time.toString()}"><br>
-		
-		<label for="event-description"><u><strong>Description</u></strong></label>
-		<input type="description" class="form-control" id="event-description" name="description" th:value="${event.description}"><br>
-		
-		<button class="btn btn-success" type="submit" th:name="id" th:value="${event.id}"> <i class="fas fa-bookmark" aria-hidden="true"></i>
-	      Save changes
-	    </button>
-	    <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
-	</form>
-  </div>
+			<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+	        <tr><td> <p>Name: </td> <td> 
+	        <input type="text" id="name" th:field="*{name}" maxlength="255"  /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p></td></tr></tr>
+	        </div>
+	        <tr><td><b>Address</b></td></tr>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('road')}? has-error">
+	        <tr><td> <p>Road name: </td> <td> 
+	        <input type="text" id="road" th:field="*{road}" maxlength="299"  /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('road')}" th:errors="*{road}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('postcode')}? has-error">
+	        <tr><td> <p>Postcode: </td> <td> 
+	        <input type="text" id="postcode" th:field="*{postcode}"  /></p> </td>
+	        <tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        <div class="form-group" th:classappend="${#fields.hasErrors('capacity')}? has-error">
+	        <tr><td> <p>Capacity: </td> <td> 
+	        <input type="number" id="capacity" th:field="*{capacity}" min="0"  required/></p> </td>
+			<tr><td></td> <td><p class="text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">errors</p></td></tr></tr>
+	        </div>
+	        
+	        </table>
+	        
+	        <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save Changes</button>
+		    <a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+		</form>
+	</div>
 
 </body>
 </html>

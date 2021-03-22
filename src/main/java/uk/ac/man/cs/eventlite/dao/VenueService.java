@@ -19,4 +19,6 @@ public interface VenueService {
     public Venue findById(long id);
 
 	public void deleteById(long id);
+	
+	public Iterable<Venue> findTopThreeVenues(Iterable<Venue> venues);
 }

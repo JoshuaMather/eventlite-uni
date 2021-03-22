@@ -1,9 +1,5 @@
 package uk.ac.man.cs.eventlite.controllers;
 
-import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import net.bytebuddy.asm.Advice.OffsetMapping.Sort;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
-import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Controller
@@ -81,16 +75,9 @@ public class VenuesController {
 	
 	@DeleteMapping("/{id}")
 	public String deleteVenueById(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
-		if (((List<Event>) (venueService.findById(id)).getEvents()).size()==0) {
 			
-			venueService.deleteById(id);
-			redirectAttrs.addFlashAttribute("error_message", "Venue unoccupied, deletion failed!");
-		   	
-		} else {
-			
-			redirectAttrs.addFlashAttribute("ok_message", "Venue occupied, venue deleted");
-			
-		}
+		venueService.deleteById(id);
+		redirectAttrs.addFlashAttribute("ok_message", "Venue deleted.");
 		return "redirect:/venues";
 		
 	}
@@ -103,5 +90,30 @@ public class VenuesController {
 		return "/venues/search";
 	}
 	
+	@GetMapping("/{id}/update")
+	public String updateVenue(@PathVariable("id") long id, Model model) {
+		
+		Venue venue = venueService.findById(id);
+		if (venue != null) 
+		{ 
+			model.addAttribute("venue", venue);
+			return "venues/update";
+		}
 
+		return "redirect:/venues";
+	}
+
+	@PostMapping("/{id}/update")
+	public String updateVenue(Model model, @PathVariable("id") long id, 
+			@Valid @ModelAttribute Venue venue,BindingResult result) 
+	{
+		
+		if(result.hasErrors()){
+			
+			return String.format("redirect:/venues/%d/update", id);
+		}
+		venueService.save(venue);
+
+		return "redirect:/venues"; 
+	}
 }
