@@ -43,10 +43,6 @@
       			</form>
     		</div>
       			
-    		<form style="display:none;" id='events' class="form-inline my-2 my-lg-0" th:action="@{/events/search/{name}(name=${text})}" th:method="get">
-	  			<input class="form-control mr-sm-2" type="text" placeholder="Search event" name="search">
-	  			<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
-    		</form>
   		</div>
 	</nav>
 
@@ -71,7 +67,6 @@
 	
   <script>
   	if (/events/.test(window.location.href)) {
-		document.getElementById('events').style.display = 'block';
 		document.getElementById('listEvents').className = 'nav-item active';
 	} else if (/venues/.test(window.location.href)){
 		document.getElementById('listVenues').className = 'nav-item active';

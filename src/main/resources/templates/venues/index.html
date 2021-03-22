@@ -50,6 +50,14 @@
 		</th>
 	</tr>
 	</table>
+	
+	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	    	<tr>
+	     		<a class="btn btn-primary" role="button" href="venues/new"><i class="fas fa-plus" aria-hidden="true"></i> 
+	     		Add a new venue</a>
+	    	</tr>
+	</div>
+	
      <div class="row">
   		<div class="col-md-4" th:each="v : ${venues}">
   			<div><i class="fas fa-bolt"></i> Venue</div>
