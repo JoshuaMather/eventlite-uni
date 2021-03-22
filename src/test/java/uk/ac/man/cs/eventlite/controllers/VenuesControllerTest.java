@@ -58,6 +58,9 @@ public class VenuesControllerTest {
 
 	@MockBean
 	private VenueService venueService;
+	
+	@MockBean
+	private EventService eventService;
 
 	// These tests may not be needed but if they are there are errors to be fixed
 //	@Test
