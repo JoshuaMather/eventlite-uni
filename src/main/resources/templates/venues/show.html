@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layouts/default}">
 <head>
-  <title>Event Description</title>
+  <title>Venue Description</title>
 </head>
 <body>
   <div layout:fragment="content">
@@ -27,9 +27,15 @@
     </div>
     
     <br>
-   
-  	<a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
-  	<br>
+    
+    <table>
+  	<td><a class="btn btn-primary" role="button" th:href="@{/venues}">
+  	<i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+  	
+  	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	     <td><a class="btn btn-success" role="button" th:href="@{/venues/{id}/update(id=${venue.id})}"><i class="fas fa-edit"></i>Update</a></td>
+	</div>
+	</table>
   
   	<div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
   	
@@ -53,8 +59,8 @@
  	<!-- <table>
      <td><a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
     
-     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
-	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+	         <td><a class="btn btn-success" role="button" th:href="@{/venues/{id}/update(id=${update.id})}"><i class="fas fa-edit"></i> Update</a></td>
 	 </div>
 
    
