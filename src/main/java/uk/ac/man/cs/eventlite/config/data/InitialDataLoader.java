@@ -44,8 +44,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		v1.setRoad("M13 9PL");
 		v1.setPostcode("M13 9PL");
 		v1.setCapacity(80);
-		v1.setLongitude(-2.23322);
-		v1.setLatitude(53.46793);
+//		v1.setLongitude(-2.23322);
+//		v1.setLatitude(53.46793);
+		venueService.findLongtitudeLatitude(v1);
 		venueService.save(v1);
 		
 		Venue v2 = new Venue();
@@ -53,8 +54,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		v2.setRoad("-");
 		v2.setPostcode("-");
 		v2.setCapacity(100000);
-		v2.setLongitude(0);
-		v2.setLatitude(0);
+//		v2.setLongitude(0);
+//		v2.setLatitude(0);
+		venueService.findLongtitudeLatitude(v2);
 		venueService.save(v2);
 		
 		Venue v3 = new Venue();
@@ -62,8 +64,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		v3.setRoad("M13 9PL");
 		v3.setPostcode("M13 9PL");
 		v3.setCapacity(50);
-		v1.setLongitude(-2.23322);
-		v1.setLatitude(53.46793);
+//		v1.setLongitude(-2.23322);
+//		v1.setLatitude(53.46793);
+		venueService.findLongtitudeLatitude(v3);
 		venueService.save(v3);
 		
 		Venue vC = new Venue();
@@ -71,8 +74,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		vC.setRoad("19 Acacia Avenue");
 		vC.setPostcode("WA15 8QY");
 		vC.setCapacity(10);
-		vC.setLongitude(-2.33789);
-		vC.setLatitude(53.38085);
+//		vC.setLongitude(-2.33789);
+//		vC.setLatitude(53.38085);
+		venueService.findLongtitudeLatitude(vC);
 		venueService.save(vC);
 		
 		Venue vB = new Venue();
@@ -80,8 +84,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		vB.setRoad("Highland Road");
 		vB.setPostcode("S43 2EZ");
 		vB.setCapacity(1000);
-		vB.setLongitude(-1.40183);
-		vB.setLatitude(53.27924);
+//		vB.setLongitude(-1.40183);
+//		vB.setLatitude(53.27924);
+		venueService.findLongtitudeLatitude(vB);
 		venueService.save(vB);
 		
 		Venue vA = new Venue();
@@ -89,8 +94,9 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		vA.setRoad("23 Manchester Road");
 		vA.setPostcode("E14 3BD");
 		vA.setCapacity(50);
-		vA.setLongitude(-0.01234);
-		vA.setLatitude(51.48750);
+//		vA.setLongitude(-0.01234);
+//		vA.setLatitude(51.48750);
+		venueService.findLongtitudeLatitude(vA);
 		venueService.save(vA);
 		
 		Event e1 = new Event();
