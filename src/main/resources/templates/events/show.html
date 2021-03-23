@@ -3,8 +3,8 @@
   layout:decorate="~{layouts/default}">
 <head>
   <title>Event Description</title>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+<script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
 <style>
 #map { width: 100%; height:600px;}
 </style>
@@ -62,7 +62,7 @@
 	      </button>
 	 </form>
 	 </div>
-	 <div id="map"></div>
+	 <div id="mapContainer"><div id="map"></div></div>
   </div>
  
 <script layout:fragment="maps"  th:inline="javascript">
@@ -70,18 +70,18 @@
 	var longitude = /*[[${event.venue.longitude}]]*/ ;
 	var latitude = /*[[${event.venue.latitude}]]*/ ;
 	
-	mapboxgl.accessToken = 'pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ';
-	var map = new mapboxgl.Map({
-		container: 'map',
-		style: 'mapbox://styles/mapbox/streets-v11',
-		center: [longitude, latitude],
-		zoom: 10
-		});
+	if(longitude != 0 && latitude != 0){
+		L.mapbox.accessToken = 'pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ';
+		var map = L.mapbox.map('map')
+    		.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'))
+    		.setView([latitude, longitude],15);
  
-	// Create a default Marker and add it to the map.
-	var marker1 = new mapboxgl.Marker()
-		.setLngLat([longitude, latitude])
-		.addTo(map);
+		// Create a default Marker and add it to the map.
+		L.marker([latitude, longitude]).addTo(map);
+	}else{
+		document.getElementById('map').style.display = 'none';
+		document.getElementById('mapContainer').innerHTML = 'This event has no physical location';
+	}
 
 /*]]>*/
 </script>

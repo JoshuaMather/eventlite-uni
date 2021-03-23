@@ -59,6 +59,7 @@ public class VenueServiceImpl implements VenueService {
 	
 	@Override
 	public Venue save(Venue v) {
+		//Set coordinates for venue here
 		return venueRepository.save(v);
 	}
 	
