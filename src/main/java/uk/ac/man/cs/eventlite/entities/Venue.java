@@ -11,6 +11,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Venue {
 	
@@ -40,6 +42,7 @@ public class Venue {
 
 	@OneToMany(mappedBy = "venue")
 	@OrderBy("date ASC, name ASC")
+	@JsonIgnore
 	private List<Event> events;
 
 	public Venue() {
