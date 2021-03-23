@@ -18,6 +18,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 @Service
 public class VenueServiceImpl implements VenueService {
 
@@ -86,5 +95,44 @@ public class VenueServiceImpl implements VenueService {
   
         list.sort((v1, v2) 
                       -> Integer.compare(((List<Event>) v1.getEvents()).size(), ((List<Event>) v2.getEvents()).size())); 
-    } 
+    }
+    
+    
+    //make sure query is the postcode to remove any ambiguity
+    @Override
+    public void findLongtitudeLatitude(Venue venue){
+    	String query = venue.getPostcode();
+		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+				.accessToken("pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ")
+				.query(query)
+				.build();
+		
+		mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
+			@Override
+			public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+		 
+				List<CarmenFeature> results = response.body().features();
+		 
+				if (results.size() > 0) {
+		 
+				  // Log the first results Point.
+				  Point p = results.get(0).center();
+				  venue.setLatitude(p.latitude());
+				  venue.setLongitude(p.longitude());
+//				  Log.d(TAG, "onResponse: " + firstResultPoint.toString());
+		 
+//				} else {
+		 
+				  // No result for your request were found.
+//				  Log.d(TAG, "onResponse: No result found");
+		 
+				}
+			}
+		 
+			@Override
+			public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
+				throwable.printStackTrace();
+			}
+		});
+    }
 }

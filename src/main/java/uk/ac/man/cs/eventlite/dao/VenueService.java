@@ -21,4 +21,6 @@ public interface VenueService {
 	public void deleteById(long id);
 	
 	public Iterable<Venue> findTopThreeVenues(Iterable<Venue> venues);
+	
+	public void findLongtitudeLatitude(Venue venue);
 }

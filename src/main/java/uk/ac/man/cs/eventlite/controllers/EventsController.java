@@ -86,7 +86,7 @@ public class EventsController {
 		Event event = eventService.findById(id);
 		model.addAttribute("event", event);
 		model.addAttribute("java8Instant", Instant.now());
-
+				
 		return "events/show";
 	}
 	
