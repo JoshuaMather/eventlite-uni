@@ -34,6 +34,9 @@ public class Venue {
 	@Size(max = 299, message = "The venue road name must have 299 characters or less.")
 	private String road;
 	
+	private double longitude;
+	
+	private double latitude;
 
 	@OneToMany(mappedBy = "venue")
 	@OrderBy("date ASC, name ASC")
@@ -87,6 +90,7 @@ public class Venue {
 	}
 
 	public void setRoad(String road) {
+
 		this.road = road;
 	}
 	
@@ -96,5 +100,21 @@ public class Venue {
 
 	public void setRoad(List<Event> events) {
 		this.events = events;
+	}
+	
+	public void setLongitude(double longitude ) {
+		this.longitude = longitude;
+	}
+	
+	public double getLongitude( ){
+		return longitude;
+	}
+	
+	public void setLatitude(double latitude ) {
+		this.latitude = latitude;
+	}
+	
+	public double getLatitude( ){
+		return latitude;
 	}
 }
