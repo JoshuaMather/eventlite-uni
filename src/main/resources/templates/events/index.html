@@ -8,6 +8,16 @@
 <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
 	<style>
 		#map { width: 100%; height:600px;}
+		
+		.L.mapbox-popup {
+		  max-width: 200px;
+		}
+		
+		.L.mapbox-popup-content {
+		  text-align: center;
+		  font-family: 'Open Sans', sans-serif;
+		}
+
 	</style>
   <style>
 		  * {
@@ -150,13 +160,17 @@
 			}
 			var marker = new L.marker([latitude, longitude])
 			.addTo(map);
-				
+	  
 			markers.push(marker);
+			
+			var popupContent = events[i].name + "<br>" + "Starts at "+ String(events[i].time).slice(0, -3);
+		    marker.bindPopup(popupContent).openPopup();
 		}
 	}
 	
 	var group = new L.featureGroup(markers);
 	map.fitBounds(group.getBounds().pad(0.3));
+	
 
 /*]]>*/
 </script>
