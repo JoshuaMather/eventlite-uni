@@ -55,9 +55,15 @@ public class VenuesControllerTest {
 
 	@Mock
 	private Venue venue;
+	
+	@Mock
+	private Event event;
 
 	@MockBean
 	private VenueService venueService;
+	
+	@MockBean
+	private EventService eventService;
 
 	// These tests may not be needed but if they are there are errors to be fixed
 //	@Test
@@ -219,7 +225,7 @@ public class VenuesControllerTest {
 	public void getVenueDescriptionAsAdmin() throws Exception {
 		when(venueService.findById(1)).thenReturn(venue);
 		
-		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+		mvc.perform(get("/venues/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
 				.andExpect(status().isOk()).andExpect(view().name("venues/show"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
 	}
@@ -228,7 +234,7 @@ public class VenuesControllerTest {
 	public void getVenueDescriptionAsGuest() throws Exception {
 		when(venueService.findById(1)).thenReturn(venue);
 		
-		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+		mvc.perform(get("/venues/1").accept(MediaType.TEXT_HTML))
 				.andExpect(status().isOk()).andExpect(view().name("venues/show"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
 	}
@@ -238,7 +244,7 @@ public class VenuesControllerTest {
 		// getting an non existing venue
 		when(venueService.findById(1)).thenReturn(null);
 		
-		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+		mvc.perform(get("/venues/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
 				.andExpect(status().isFound()).andExpect(view().name("redirect:/venues"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
 	}
@@ -248,7 +254,7 @@ public class VenuesControllerTest {
 		// getting an non existing venue
 		when(venueService.findById(1)).thenReturn(null);
 		
-		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+		mvc.perform(get("/venues/1").accept(MediaType.TEXT_HTML))
 				.andExpect(status().isFound()).andExpect(view().name("redirect:/venues"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
 	}
