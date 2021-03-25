@@ -83,6 +83,11 @@ public class EventsController {
 	
 	@GetMapping("/{id}")
 	public String eventDescription(@PathVariable("id") long id, Model model) {	
+		
+		if (eventService.findById(id) == null) {
+			return "redirect:/events";
+		}
+		
 		Event event = eventService.findById(id);
 		model.addAttribute("event", event);
 		model.addAttribute("java8Instant", Instant.now());

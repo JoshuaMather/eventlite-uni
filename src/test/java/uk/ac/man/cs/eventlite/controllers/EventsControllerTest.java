@@ -246,5 +246,43 @@ public class EventsControllerTest {
 		assertThat("description", equalTo(arg.getValue().getDescription()));
 		assertThat(localtime, equalTo(arg.getValue().getTime().toString()));
 	}
+	
+	@Test
+	public void getEventDescriptionAsAdmin() throws Exception {
+		when(eventService.findById(1)).thenReturn(event);
+		
+		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("events/show"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("eventDescription"));
+	}
+	
+	@Test
+	public void getEventDescriptionAsGuest() throws Exception {
+		when(eventService.findById(1)).thenReturn(event);
+		
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("events/show"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("eventDescription"));
+	}
+	
+	@Test
+	public void getNonExistingEventDescriptionAsAdmin() throws Exception {
+		// getting an non existing event
+		when(eventService.findById(1)).thenReturn(null);
+		
+		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isFound()).andExpect(view().name("redirect:/events"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("eventDescription"));
+	}
+	
+	@Test
+	public void getNonExistingEventDescriptionAsGuest() throws Exception {
+		// getting an non existing event
+		when(eventService.findById(1)).thenReturn(null);
+		
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+				.andExpect(status().isFound()).andExpect(view().name("redirect:/events"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("eventDescription"));
+	}
 
 }

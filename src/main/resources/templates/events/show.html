@@ -17,15 +17,17 @@
     <br><h1 th:text="${event.name}"></h1><br> 
   
   	<lable><u><strong>Date of Event:</strong></u></lable>   	
-    <p th:text="${#temporals.format(event.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
+    <p th:text="${#temporals.format(event?.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
     
     <div th:if="${event.time} != null">	
     	<lable><u><strong>Time of Event:</strong></u></lable>
     	<p th:text="${event.time}"> Time</p>
     </div> 
     	
-    <label><u><strong>Location:</strong></u></label>
-    <p> <a th:href="@{/venues/{id}(id=${event.venue.id})}" th:text="${event.venue.name}"></a></p>
+    <div th:if="${event.venue} != null">	
+	    <label><u><strong>Location:</strong></u></label>
+	    <p> <a th:href="@{/venues/{id}(id=${event.venue.id})}" th:text="${event.venue.name}"></a></p>
+    </div> 
     
     <div th:if="${event.description != '' and event.description != null}">
    		<lable><u><strong>Event Description:</strong></u></lable>
@@ -64,26 +66,26 @@
 	 </div>
 	 <div id="mapContainer"><div id="map"></div></div>
   </div>
- 
-<script layout:fragment="maps"  th:inline="javascript">
-/*<![CDATA[*/
-	var longitude = /*[[${event.venue.longitude}]]*/ ;
-	var latitude = /*[[${event.venue.latitude}]]*/ ;
-	
-	if(longitude != 0 && latitude != 0){
-		L.mapbox.accessToken = 'pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ';
-		var map = L.mapbox.map('map')
-    		.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'))
-    		.setView([latitude, longitude],15);
- 
-		// Create a default Marker and add it to the map.
-		L.marker([latitude, longitude]).addTo(map);
-	}else{
-		document.getElementById('map').style.display = 'none';
-		document.getElementById('mapContainer').innerHTML = 'This event has no physical location';
-	}
 
-/*]]>*/
-</script>
+	<script layout:fragment="maps"  th:inline="javascript" th:if="${event.venue} != null">
+	/*<![CDATA[*/
+		var longitude = /*[[${event.venue.longitude}]]*/ ;
+		var latitude = /*[[${event.venue.latitude}]]*/ ;
+		
+		if(longitude != 0 && latitude != 0){
+			L.mapbox.accessToken = 'pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ';
+			var map = L.mapbox.map('map')
+	    		.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'))
+	    		.setView([latitude, longitude],15);
+	 
+			// Create a default Marker and add it to the map.
+			L.marker([latitude, longitude]).addTo(map);
+		}else{
+			document.getElementById('map').style.display = 'none';
+			document.getElementById('mapContainer').innerHTML = 'This event has no physical location';
+		}
+	
+	/*]]>*/
+	</script>
 </body>
 </html>

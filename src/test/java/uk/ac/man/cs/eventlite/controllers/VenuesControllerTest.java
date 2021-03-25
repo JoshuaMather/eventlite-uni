@@ -214,5 +214,43 @@ public class VenuesControllerTest {
 		assertThat(1, equalTo(arg.getValue().getCapacity()));
 		assertThat("road, postcode", equalTo(arg.getValue().getAddress()));
 	}
+	
+	@Test
+	public void getVenueDescriptionAsAdmin() throws Exception {
+		when(venueService.findById(1)).thenReturn(venue);
+		
+		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("venues/show"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
+	}
+	
+	@Test
+	public void getVenueDescriptionAsGuest() throws Exception {
+		when(venueService.findById(1)).thenReturn(venue);
+		
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("venues/show"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
+	}
+	
+	@Test
+	public void getNonExistingVenueDescriptionAsAdmin() throws Exception {
+		// getting an non existing venue
+		when(venueService.findById(1)).thenReturn(null);
+		
+		mvc.perform(get("/events/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isFound()).andExpect(view().name("redirect:/venues"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
+	}
+	
+	@Test
+	public void getNonExistingVenueDescriptionAsGuest() throws Exception {
+		// getting an non existing venue
+		when(venueService.findById(1)).thenReturn(null);
+		
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
+				.andExpect(status().isFound()).andExpect(view().name("redirect:/venues"))
+				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
+	}
 
 }

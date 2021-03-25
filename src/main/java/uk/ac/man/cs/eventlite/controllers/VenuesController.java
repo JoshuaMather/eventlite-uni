@@ -66,6 +66,11 @@ public class VenuesController {
 	
 	@GetMapping("/{id}")
 	public String venueDescription(@PathVariable("id") long id, Model model) {	
+		
+		if (venueService.findById(id) == null) {
+			return "redirect:/venues";
+		}
+		
 		Venue venue = venueService.findById(id);
 		model.addAttribute("venue", venue);	
 		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(venue.getEvents()));
