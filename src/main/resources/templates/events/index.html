@@ -163,8 +163,8 @@
 	  
 			markers.push(marker);
 			
-			var popupContent = events[i].name + "<br>" + "Starts at "+ String(events[i].time).slice(0, -3);
-		    marker.bindPopup(popupContent).openPopup();
+			var popupContent = events[i].name + "<br>Starts at "+ events[i].time.slice(0, -3);
+		    marker.bindPopup(popupContent);
 		}
 	}
 	
