@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.Collection;
 
 import javax.validation.Valid;
 
@@ -83,7 +84,18 @@ public class VenuesControllerApi {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteVenueById(@PathVariable long id) {
-		venueService.deleteById(id);
+		Venue venue = venueService.findById(id);
+		Iterable<Event> events = venue.getEvents();
+		
+		int count = ((Collection<?>) events).size();
+		
+		if (count == 0) {
+			venueService.deleteById(id);
+			
+		}
+		else {
+			return ResponseEntity.badRequest().build();
+		}
 		
 		return ResponseEntity.noContent().build();
 	}

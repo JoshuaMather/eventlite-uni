@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 
 import uk.ac.man.cs.eventlite.config.Security;
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -50,6 +52,8 @@ public class VenuesControllerApiTest {
 	private MockMvc mvc;
 	
 	private Venue venue;
+	
+	private Event event;
 
 	@MockBean
 	private VenueService venueService;
