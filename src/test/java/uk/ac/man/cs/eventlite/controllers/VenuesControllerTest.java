@@ -55,6 +55,9 @@ public class VenuesControllerTest {
 
 	@Mock
 	private Venue venue;
+	
+	@Mock
+	private Event event;
 
 	@MockBean
 	private VenueService venueService;
@@ -216,6 +219,42 @@ public class VenuesControllerTest {
 		assertThat("postcode", equalTo(arg.getValue().getPostcode()));
 		assertThat(1, equalTo(arg.getValue().getCapacity()));
 		assertThat("road, postcode", equalTo(arg.getValue().getAddress()));
+	}
+	
+	@Test 
+	public void deleteUnOccupiedVenue() throws Exception {
+		when(venueService.findById(1)).thenReturn(venue);
+		mvc.perform(delete("/venues/1").with(user("Mustafa").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.TEXT_HTML)
+				.with(csrf()))
+		        .andExpect(status().isFound())
+		        .andExpect(view().name("redirect:/venues"));
+		
+		verify(venueService).deleteById(1);
+	}
+	
+	@Test 
+	public void deleteOccupiedVenue() throws Exception {
+		when(venueService.findById(1)).thenReturn(venue);
+		when(event.getVenue()).thenReturn(venue);
+		when(venue.getEvents()).thenReturn(Collections.<Event>singletonList(event));
+		mvc.perform(delete("/venues/1").with(user("Mustafa").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.TEXT_HTML)
+				.with(csrf()))
+		        .andExpect(status().isFound())
+		        .andExpect(view().name("redirect:/venues"));
+		
+		verify(venueService, never()).deleteById(1);
+	}
+	
+	@Test
+	public void deleteVenueBadRole() throws Exception {
+		mvc.perform(
+				delete("/venues/1").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+						.accept(MediaType.TEXT_HTML).with(csrf()))
+				.andExpect(status().isForbidden());
+
+		verify(venueService, never()).deleteById(1);
 	}
 
 }
