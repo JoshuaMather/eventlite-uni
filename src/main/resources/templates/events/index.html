@@ -153,18 +153,18 @@
 		
 		// Create a default Marker and add it to the map.
 		if(longitude != 0 && latitude != 0){
-			// Unclusters markers right on top of each other
-			if (i>0 && events[i-1].venue.longitude == events[i].venue.longitude && events[i-1].venue.latitude == events[i].venue.latitude){
-				longitude -= 0.00005;
-				latitude -= 0.00005;
-			}
 			var marker = new L.marker([latitude, longitude])
-			.addTo(map);
-	  
+						.addTo(map);
+				  
 			markers.push(marker);
-			
 			var popupContent = events[i].name + "<br>Starts at "+ events[i].time.slice(0, -3);
-		    marker.bindPopup(popupContent);
+			for(j=1; j<events.length-1; j++){
+				if (events[i].venue.longitude == events[j].venue.longitude && events[i].venue.latitude == events[j].venue.latitude && i!=j){
+					popupContent += "<br>" + events[j].name + "<br>Starts at "+ events[j].time.slice(0, -3);
+		   			
+				}
+			}
+			marker.bindPopup(popupContent);
 		}
 	}
 	
