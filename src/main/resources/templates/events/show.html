@@ -62,9 +62,16 @@
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
 	 </div>
-
-   
      </table>
+     <br>
+     
+     /*Handling tweets */
+     <label><strong>Share the event</strong></label>
+     	<form th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
+			  <input type="text" placeholder="Write a tweet" name="tweet">
+			  <button type="submit"><i>Tweet</i></button>
+		</form>
+		
      <br>
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	 <form th:action = "@{/events/{id}(id=${event.id})}" th:method="delete">

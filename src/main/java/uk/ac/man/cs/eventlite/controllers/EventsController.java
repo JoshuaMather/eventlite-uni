@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import uk.ac.man.cs.eventlite.dao.EventRepository;
 import uk.ac.man.cs.eventlite.dao.EventService;
+import uk.ac.man.cs.eventlite.dao.TwitterService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 
@@ -32,6 +34,9 @@ public class EventsController {
 
 	@Autowired
 	private VenueService venueService;
+
+	@Autowired
+	private TwitterService twitterService;
 
 	@GetMapping
 	public String getAllEvents(Model model) {
@@ -127,6 +132,23 @@ public class EventsController {
 		model.addAttribute("java8Instant", Instant.now());
 		
 		return "/events/search";
+	}
+	
+	@PostMapping("/{id}/tweet")
+	public String sendTweet(Model model, @RequestParam(value = "tweet", required = true) String tweet,
+			 @PathVariable("id") long id) {
+		
+		Event event =eventService.findById(id);
+		tweet = tweet.strip();
+		String result = event.getName() + " " + tweet;
+		
+		if(result.length() > 280) {
+			return String.format("redirect:/events/%d", id);
+		}
+		
+		twitterService.postTweet(result);
+		
+		return String.format("redirect:/events/%d", id);
 	}
 
 
