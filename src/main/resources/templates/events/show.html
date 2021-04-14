@@ -65,11 +65,11 @@
      </table>
      <br>
      
-     /*Handling tweets */
-     <label><strong>Share the event</strong></label>
+     /* Handling tweets*/
+     <label><strong>Share the event!</strong></label>
      	<form th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
-			  <input type="text" placeholder="Write a tweet" name="tweet">
-			  <button type="submit"><i>Tweet</i></button>
+			  <input type="text" class="form-control" name="tweet" th:value="${event.name}"><br>
+			  <button type="submit"><i>Send Tweet</i></button>
 		</form>
 		
      <br>
