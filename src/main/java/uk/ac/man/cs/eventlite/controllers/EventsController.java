@@ -2,6 +2,7 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.Instant;
 
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import uk.ac.man.cs.eventlite.dao.EventRepository;
+import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.TwitterService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
@@ -39,7 +40,7 @@ public class EventsController {
 	private TwitterService twitterService;
 
 	@GetMapping
-	public String getAllEvents(Model model) {
+	public String getAllEvents(Model model) throws TwitterException {
 		Iterable<Event> events = eventService.findAllByAsc();
 		model.addAttribute("events", eventService.findAll());
 		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events));
@@ -47,6 +48,8 @@ public class EventsController {
 		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
 		model.addAttribute("venues", venueService.findAll());
 		model.addAttribute("java8Instant", Instant.now());
+		TwitterService twitter = new TwitterService();
+		model.addAttribute("latestTweets", twitter.getTimeLine());
 		
 		return "events/index";
 	}

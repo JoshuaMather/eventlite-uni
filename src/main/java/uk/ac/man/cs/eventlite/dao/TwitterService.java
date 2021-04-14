@@ -1,6 +1,8 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
+
 
 @Service
 public class TwitterService {
@@ -36,8 +39,23 @@ public class TwitterService {
     	}
     }
 
-    public List<Status> getTimeLine(){
-        return null;
+    public List<String> getTimeLine() throws TwitterException{
+    	
+    	 Twitter twitter = getTwitterInstance();
+    	 List<String> timeline = twitter.getHomeTimeline().stream()
+    			 .map(item -> item.getText())
+    			 .collect(Collectors.toList());
+    	 if (timeline.size() > 5) {
+    		 return timeline.subList(0, 5);
+    	 } else {
+    		 return timeline;
+    	 }
+    	 
     }
+   
+    private Twitter getTwitterInstance() {	
+		return twitter;
+		}
 
+    
 }
