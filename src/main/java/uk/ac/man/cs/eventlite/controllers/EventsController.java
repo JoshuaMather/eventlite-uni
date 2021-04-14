@@ -136,7 +136,7 @@ public class EventsController {
 	
 	@PostMapping("/{id}/tweet")
 	public String sendTweet(Model model, @RequestParam(value = "tweet", required = true) String tweet,
-			 @PathVariable("id") long id) {
+			 @PathVariable("id") long id, RedirectAttributes redirectAttrs) {
 		
 		Event event =eventService.findById(id);
 		tweet = tweet.strip();
@@ -147,6 +147,8 @@ public class EventsController {
 		}
 		
 		twitterService.postTweet(result);
+		
+		redirectAttrs.addFlashAttribute("tweet", tweet);
 		
 		return String.format("redirect:/events/%d", id);
 	}

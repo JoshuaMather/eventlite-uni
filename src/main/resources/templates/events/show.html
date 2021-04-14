@@ -64,12 +64,17 @@
 	 </div>
      </table>
      <br>
-     
+
      /*Handling tweets */
+     <div class="container">
+	    <div class="alert alert-success alert-dismissible" role="alert" th:if="${tweet}">
+	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+	  	<span th:utext="'Your tweet &lt;strong&gt;' + ${tweet} + ' &lt;/strong&gt; posted.'"></span>
+	  </div>
      <label><strong>Share the event</strong></label>
-     	<form th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
+     	<form th:name="form1" th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
 			  <input type="text" placeholder="Write a tweet" name="tweet">
-			  <button type="submit"><i>Tweet</i></button>
+			  <button type="submit" onClick = "display();"><i>Tweet</i></button>
 		</form>
 		
      <br>
