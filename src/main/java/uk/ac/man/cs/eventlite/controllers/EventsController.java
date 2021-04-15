@@ -50,6 +50,8 @@ public class EventsController {
 		model.addAttribute("java8Instant", Instant.now());
 		TwitterService twitter = new TwitterService();
 		model.addAttribute("latestTweets", twitter.getTimeLine());
+		model.addAttribute("latestTweetsId", twitter.getTimelineId());
+		
 		
 		return "events/index";
 	}
