@@ -52,6 +52,18 @@ public class TwitterService {
     	 }
     	 
     }
+    
+    public List<Long> getTimelineId() throws TwitterException{
+    	Twitter twitter = getTwitterInstance();
+   	 	List<Status> timeline = twitter.getHomeTimeline();
+   	 	
+    	List<Long> tweetid = new ArrayList<Long>();;
+    	for(int i=0; i<timeline.size(); i++) {
+    		tweetid.add(timeline.get(i).getId());
+    	}
+    	
+    	return tweetid;
+    }
    
     private Twitter getTwitterInstance() {	
 		return twitter;

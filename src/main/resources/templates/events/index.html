@@ -121,8 +121,8 @@
     <table class="table table-striped table-hover">
    
       <tbody>
-          <tr th:each="tweet : ${latestTweets}">
-          <td th:text="${{tweet}}">Tweet</td>
+          <tr th:each="tweet,iter : ${latestTweets}">
+          <td><a th:href="@{https://twitter.com/Eventlite21F01/status/{id}(id=${latestTweetsId[iter.index]})}" th:text="${{tweet}}">Tweet</td>
         </tr>
       </tbody>
       
