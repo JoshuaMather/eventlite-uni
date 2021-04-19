@@ -24,6 +24,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
@@ -295,6 +296,220 @@ public class EventsControllerTest {
 		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML))
 				.andExpect(status().isFound()).andExpect(view().name("redirect:/events"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("eventDescription"));
+	}
+	
+	@Test
+	public void updateEvent() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("name", e.getName())
+    			.param("date", e.getDate().toString())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/events"));
+	}
+	
+	@Test
+	public void updateEventWithNoTime() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("name", e.getName())
+    			.param("date", e.getDate().toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/events"));
+	}
+	
+	@Test
+	public void updateEventWithNoName() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+	}
+	
+	@Test
+	public void updateEventWithLongName() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("a".repeat(256));
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("name", e.getName())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    	        .andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+	}
+	
+	@Test
+	public void updateEventWithNoVenue() throws Exception {
+		Event e = new Event();
+		Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setName("event");
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("name", String.valueOf(e.getName()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(view().name("redirect:/events"));
+	}
+	
+	@Test
+	public void updateEventWithDescription() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setDescription("a".repeat(499));
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("name", e.getName())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.param("description", e.getDescription())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+		    	.andExpect(handler().methodName("saveUpdates"))
+				.andExpect(view().name("redirect:/events"));
+	}
+	
+	@Test
+	public void updateEventWithLongDescription() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setDescription("a".repeat(500));
+    	e.setDate(LocalDate.now().plusDays(1));
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("name", e.getName())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.param("description", e.getDescription())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+		    	.andExpect(handler().methodName("saveUpdates"))
+				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+	}
+	
+	@Test
+	public void updateEventWithNoDate() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("name", e.getName())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("saveUpdates"))
+    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+	}
+	
+	@Test
+	public void updateEventWithInvalidDate() throws Exception {
+		Event e = new Event();
+    	Venue v = new Venue();
+    	v.setId(1);
+    	e.setId(1);
+    	e.setName("event");
+    	e.setDate(LocalDate.now());
+    	e.setTime(LocalTime.now());
+    	e.setVenue(v);
+    	
+    	mvc.perform(post("/events/1/update")
+    			.param("id", String.valueOf(e.getId()))
+    			.param("date", e.getDate().toString())
+    			.param("name", e.getName())
+    			.param("time", e.getTime().truncatedTo(ChronoUnit.MINUTES).toString())
+    			.param("venue.id", String.valueOf(e.getVenue().getId()))
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+		    	.andExpect(handler().methodName("saveUpdates"))
+				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
 	}
 
 }
