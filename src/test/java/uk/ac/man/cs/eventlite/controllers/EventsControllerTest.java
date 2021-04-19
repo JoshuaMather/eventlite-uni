@@ -104,11 +104,19 @@ public class EventsControllerTest {
 	@Test
 	public void deleteAnEvent() throws Exception {
 		when(eventService.findById(0)).thenReturn(event);
-		// Fix this error: isFound()
 		mvc.perform(delete("/events/0").with(user("Mustafa").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML)
 				.with(csrf())).andExpect(status().isFound()).andExpect(view().name("redirect:/events"));
 			
 	}
+	
+	@Test
+	public void deleteEventNoAuth() throws Exception {
+		when(eventService.findById(0)).thenReturn(event);
+		mvc.perform(delete("/events/0").accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isFound())
+		        .andExpect(header().string("Location", endsWith("/sign-in")));
+	}
+		
 	
 	@Test
 	public void getNewEventNoAuth() throws Exception {

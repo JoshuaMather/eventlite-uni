@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.util.Collection;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Venue;
+import uk.ac.man.cs.eventlite.entities.Event;
 
 @Controller
 @RequestMapping(value = "/venues", produces = { MediaType.TEXT_HTML_VALUE })
@@ -80,9 +83,19 @@ public class VenuesController {
 	
 	@DeleteMapping("/{id}")
 	public String deleteVenueById(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
-			
-		venueService.deleteById(id);
-		redirectAttrs.addFlashAttribute("ok_message", "Venue deleted.");
+		Venue venue = venueService.findById(id);
+		Iterable<Event> events = venue.getEvents();
+		
+		int count = ((Collection<?>) events).size();
+		
+		if (count == 0) {
+			venueService.deleteById(id);
+			redirectAttrs.addFlashAttribute("ok_message", venue.getName()+" deleted.");
+		}
+		else {
+			redirectAttrs.addFlashAttribute("error_message", "Occupied venue cannot be deleted!");
+		}
+	
 		return "redirect:/venues";
 		
 	}
