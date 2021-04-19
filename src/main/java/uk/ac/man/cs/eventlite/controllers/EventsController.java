@@ -51,6 +51,7 @@ public class EventsController {
 		TwitterService twitter = new TwitterService();
 		model.addAttribute("latestTweets", twitter.getTimeLine());
 		model.addAttribute("latestTweetsId", twitter.getTimelineId());
+		model.addAttribute("latestTweetsDate", twitter.getTimelineDates());
 		
 		
 		return "events/index";

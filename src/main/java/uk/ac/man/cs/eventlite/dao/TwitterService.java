@@ -64,10 +64,24 @@ public class TwitterService {
     	
     	return tweetid;
     }
+    
+    public List<String> getTimelineDates() throws TwitterException{
+    	Twitter twitter = getTwitterInstance();
+   	 	List<String> tweetDate = twitter.getHomeTimeline().stream()
+			 .map(item -> item.getCreatedAt().toString())
+			 .collect(Collectors.toList());
+   	 	
+   	 	if (tweetDate.size() > 5) {
+   	 		return tweetDate.subList(0, 5);
+   	 	} else {
+   	 		return tweetDate;
+   	 	}
+    
+    }
    
     private Twitter getTwitterInstance() {	
 		return twitter;
-		}
+	}
 
     
 }
