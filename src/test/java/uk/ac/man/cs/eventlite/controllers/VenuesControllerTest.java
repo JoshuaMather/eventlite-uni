@@ -23,6 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -219,6 +220,24 @@ public class VenuesControllerTest {
 		assertThat("postcode", equalTo(arg.getValue().getPostcode()));
 		assertThat(1, equalTo(arg.getValue().getCapacity()));
 		assertThat("road, postcode", equalTo(arg.getValue().getAddress()));
+	}
+	
+	@Test
+	public void searchAVenue() throws Exception {
+		Venue v1 = new Venue();
+		v1.setId(1);
+    	v1.setName("Room 1");
+    	Venue v2 = new Venue();
+		v2.setId(2);
+    	v2.setName("Room 2");
+    	ArrayList<Venue> list = new ArrayList<Venue>();
+    	list.add(v1);
+    	list.add(v2);
+    	
+		when(venueService.findByNameAsc("Room")).thenReturn(list);
+		mvc.perform(get("/venues/search").with(user("Rob").roles(Security.ADMIN_ROLE)).param("search", "Room").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("/venues/search"))
+		.andExpect(handler().methodName("searchVenue"));
 	}
 	
 	@Test 
