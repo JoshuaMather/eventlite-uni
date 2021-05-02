@@ -1,7 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.Instant;
-
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.TwitterService;
@@ -48,10 +50,13 @@ public class EventsController {
 		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
 		model.addAttribute("venues", venueService.findAll());
 		model.addAttribute("java8Instant", Instant.now());
-		TwitterService twitter = new TwitterService();
-		model.addAttribute("latestTweets", twitter.getTimeLine());
-		model.addAttribute("latestTweetsId", twitter.getTimelineId());
-		model.addAttribute("latestTweetsDate", twitter.getTimelineDates());
+		
+		TwitterService twitter_service = new TwitterService();
+		Twitter twitter = twitter_service.getTwitterInstance();
+   	 	List<Status> timeline = twitter.getUserTimeline();
+		model.addAttribute("latestTweets", twitter_service.getTimeLine(timeline));
+		model.addAttribute("latestTweetsId", twitter_service.getTimelineId(timeline));
+		model.addAttribute("latestTweetsDate", twitter_service.getTimelineDates(timeline));
 		
 		
 		return "events/index";
