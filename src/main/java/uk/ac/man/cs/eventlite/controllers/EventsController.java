@@ -129,7 +129,7 @@ public class EventsController {
 		
 		eventService.save(event);
 		
-		return "redirect:/events";
+		return String.format("redirect:/events/%d", id);
 	}
 
 	@GetMapping("/search")
