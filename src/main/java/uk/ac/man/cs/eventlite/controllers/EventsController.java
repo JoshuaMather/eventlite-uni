@@ -149,15 +149,13 @@ public class EventsController {
 	public String sendTweet(Model model, @RequestParam(value = "tweet", required = true) String tweet,
 			 @PathVariable("id") long id, RedirectAttributes redirectAttrs) {
 		
-		Event event =eventService.findById(id);
 		tweet = tweet.strip();
-		String result = event.getName() + " " + tweet;
 		
-		if(result.length() > 280) {
+		if(tweet.length() > 280) {
 			return String.format("redirect:/events/%d", id);
 		}
 		
-		twitterService.postTweet(result);
+		twitterService.postTweet(tweet);
 		
 		redirectAttrs.addFlashAttribute("tweet", tweet);
 		
