@@ -42,8 +42,10 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 	@Test
 	public void testGetSingleEvent() {
 		client.get().uri("/events/9").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
-		.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML)
-		.expectBody(String.class).consumeWith(result -> {
+		.expectHeader()
+		.contentTypeCompatibleWith(MediaType.TEXT_HTML)
+		.expectBody(String.class)
+		.consumeWith(result -> {
 			assertThat(result.getResponseBody(), containsString("COMP23412 Showcase, group F"));
 		});
 	}
