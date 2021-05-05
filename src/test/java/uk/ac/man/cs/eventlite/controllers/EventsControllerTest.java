@@ -135,7 +135,7 @@ public class EventsControllerTest {
 		beta.setName("Beta");
 		beta.setDate(LocalDate.of(2019, 07, 11));
 		beta.setTime(LocalTime.of(10, 0, 0));
-		events.add(alpha);
+		events.add(beta);
 		
 		Event apple = new Event();
 		apple.setName("Apple");
@@ -143,10 +143,10 @@ public class EventsControllerTest {
 		events.add(apple);
 		
 		LocalDate now = LocalDate.of(2019, 06, 01); 
-		
 		when(eventService.findAllByAsc()).thenReturn(events);
-		
-		Iterator<Event> upcommingEvents = eventService.findUpcomingEvents(events, now).iterator();
+		Iterable<Event> events_ascending= eventService.findAllByAsc();
+		when(eventService.findUpcomingEvents(events_ascending, now)).thenReturn(events_ascending);
+		Iterator<Event> upcommingEvents = eventService.findUpcomingEvents(events_ascending, now).iterator();
 		
 		Event event1 = upcommingEvents.next();
 		assertEquals(event1.getName(), alpha.getName());
@@ -182,8 +182,9 @@ public class EventsControllerTest {
 		
 		LocalDate now = LocalDate.of(2019, 06, 01); 
 		when(eventService.findAllByDesc()).thenReturn(events);
-		
-		Iterator<Event> previousEvents = eventService.findPreviousEvents(events, now).iterator();
+		Iterable<Event> events_descending= eventService.findAllByDesc();
+		when(eventService.findPreviousEvents(events_descending, now)).thenReturn(events_descending);
+		Iterator<Event> previousEvents = eventService.findPreviousEvents(events_descending, now).iterator();
 		
 		Event event1 = previousEvents.next();
 		assertEquals(event1.getName(), former.getName());
