@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -23,8 +24,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,6 +93,46 @@ public class VenuesControllerTest {
 //
 //		verify(venueService).findAll();
 //	}
+	@Test
+	public void sortEvents() throws Exception{
+		ArrayList<Venue> venues = new ArrayList<Venue>();
+		
+		Venue venueA = new Venue();
+		venueA.setName("Venue A");
+		venueA.setAddress("23 Manchester Road");
+		venueA.setPostcode("E14 3BD");
+		venueA.setCapacity(50);
+		venues.add(venueA);
+		
+		Venue venueB = new Venue();
+		venueB.setName("Venue B");
+		venueB.setAddress("Highland ROad");
+		venueB.setPostcode("S43 2EZ");
+		venueB.setCapacity(1000);
+		venues.add(venueB);
+		
+		Venue venueC = new Venue();
+		venueC.setName("Venue C");
+		venueC.setAddress("19 Acacia Avenue");
+		venueC.setPostcode("WA15 8QY");
+		venueC.setCapacity(10);
+		venues.add(venueC);
+	
+		
+		LocalDate now = LocalDate.of(2019, 06, 01); 
+		when(venueService.findAllByAsc()).thenReturn(venues);
+		
+		Iterator<Venue> previousEvents = venueService.findAllByAsc().iterator();
+		
+		Venue venue1 = previousEvents.next();
+		assertEquals(venue1.getName(), venueA.getName());
+
+		Venue venue2 = previousEvents.next();
+		assertEquals(venue2.getName(), venueB.getName());
+
+		Venue venue3 = previousEvents.next();
+		assertEquals(venue3.getName(), venueC.getName());
+	}
 	
 	@Test
 	public void getNewVenueNoAuth() throws Exception {
