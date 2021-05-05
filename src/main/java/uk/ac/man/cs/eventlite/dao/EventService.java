@@ -1,10 +1,13 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface EventService {
 
 	public long count();
+	
+	Iterable<Event> findByVenue(Venue venue);
 
 	public Iterable<Event> findAll();
 	
@@ -27,8 +30,6 @@ public interface EventService {
 	public Event findById(long id);
 	
 	public Iterable<Event> findByName(String id);
-	
-	public Iterable<Event> findThreeUpcomingEvents(Iterable<Event> events);
 	
 }
 

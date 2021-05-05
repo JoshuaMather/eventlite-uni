@@ -42,7 +42,7 @@ public class VenuesControllerApi {
 	@GetMapping
 	public CollectionModel<Venue> getAllVenues() {
 
-		return venueCollection(venueService.findAllByDesc());
+		return venueCollection(venueService.findAllByAsc());
 	}
 	
 	private CollectionModel<Venue> venueCollection(Iterable<Venue> venues) {

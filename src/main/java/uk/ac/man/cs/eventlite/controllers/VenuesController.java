@@ -37,7 +37,7 @@ public class VenuesController {
 	@GetMapping
 	public String getAllVenues(Model model) {
 
-		model.addAttribute("venues", venueService.findAllByDesc());
+		model.addAttribute("venues", venueService.findAllByAsc());
 
 		return "venues/index";
 	}

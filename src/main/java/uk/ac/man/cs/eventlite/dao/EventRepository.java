@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 import org.springframework.data.repository.CrudRepository;
 
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface EventRepository extends CrudRepository<Event, Long> {
 	
@@ -21,9 +22,10 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 	@SuppressWarnings("unchecked")
 	public Event save(Event e);	
 	
-
 	public Event findById(long id);
 	
 	public Iterable<Event> findAllByNameContains(String name);
+
+	public Iterable<Event> findByVenue(Venue venue);
 	
 }
