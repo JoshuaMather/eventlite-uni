@@ -415,7 +415,7 @@ public class EventsControllerTest {
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
-    			.andExpect(view().name("redirect:/events"));
+    			.andExpect(view().name("redirect:/events/1"));
 	}
 	
 	@Test
@@ -438,7 +438,7 @@ public class EventsControllerTest {
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
-    			.andExpect(view().name("redirect:/events"));
+    			.andExpect(view().name("redirect:/events/1"));
 	}
 	
 	@Test
@@ -506,7 +506,7 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events"));
+    			.andExpect(view().name("redirect:/events/1"));
 	}
 	
 	@Test
@@ -532,7 +532,7 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
-				.andExpect(view().name("redirect:/events"));
+				.andExpect(view().name("redirect:/events/1"));
 	}
 	
 	@Test
