@@ -62,6 +62,7 @@
      
      
      <!--Handling tweets-->
+     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
      <div class="container">
 	    <div class="alert alert-success alert-dismissible" role="alert" th:if="${tweet}">
 	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
@@ -78,7 +79,8 @@
 			  <input type="text" class="form-control" name="tweet" th:value="${event.name}"><br>
 			  <button type="submit"><i>Send Tweet</i></button>
 		</form>
-		
+	</div>
+	</div>
      <br>
      <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
 	 <form th:action = "@{/events/{id}(id=${event.id})}" th:method="delete">

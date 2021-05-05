@@ -85,7 +85,7 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public void findLongtitudeLatitude(Venue venue){
     	String query = venue.getPostcode();
-//    	query = query.replaceAll("\\s+","");
+
 		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
 				.accessToken("pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ")
 				.query(query)
@@ -104,12 +104,6 @@ public class VenueServiceImpl implements VenueService {
 				  venue.setLatitude(p.latitude());
 				  venue.setLongitude(p.longitude());
 				  venueRepository.save(venue);
-//				  Log.d(TAG, "onResponse: " + firstResultPoint.toString());
-		 
-//				} else {
-		 
-				  // No result for your request were found.
-//				  Log.d(TAG, "onResponse: No result found");
 		 
 				}
 			}

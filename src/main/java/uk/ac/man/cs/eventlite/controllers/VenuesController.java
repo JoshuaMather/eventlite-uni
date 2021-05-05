@@ -62,6 +62,7 @@ public class VenuesController {
 		}
 
 		venue.setAddress(venue.getRoad() + ", " + venue.getPostcode());
+		venueService.findLongtitudeLatitude(venue);
 		venueService.save(venue);
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");
 
@@ -130,9 +131,10 @@ public class VenuesController {
 	{
 		
 		if(result.hasErrors()){
-			
+			model.addAttribute("venue", venue);
 			return String.format("redirect:/venues/%d/update", id);
 		}
+		venueService.findLongtitudeLatitude(venue);
 		venueService.save(venue);
 
 		return String.format("redirect:/venues/%d", id); 

@@ -127,6 +127,7 @@ public class EventsController {
 			@Valid @ModelAttribute Event event,BindingResult result) {
 		
 		if(result.hasErrors()) {
+			model.addAttribute("event", event);
 			return String.format("redirect:/events/%d/update", id);
 		}
 		
