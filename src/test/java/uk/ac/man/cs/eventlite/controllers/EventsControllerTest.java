@@ -215,6 +215,24 @@ public class EventsControllerTest {
 	}
 	
 	@Test
+	public void searchAnEventNoResults() throws Exception {
+		Event e1 = new Event();
+		e1.setId(1);
+    	e1.setName("Software engineering 1");
+    	Event e2 = new Event();
+		e2.setId(2);
+    	e2.setName("Software engineering 2");
+    	ArrayList<Event> list = new ArrayList<Event>();
+    	list.add(e1);
+    	list.add(e2);
+    	
+		when(eventService.findByNameAsc("Event")).thenReturn(null);
+		mvc.perform(get("/events/search").with(user("Rob").roles(Security.ADMIN_ROLE)).param("search", "Software").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("/events/search"))
+		.andExpect(handler().methodName("searchEvent"));
+	}
+	
+	@Test
 	public void getNewEventNoAuth() throws Exception {
 		mvc.perform(get("/events/new").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
 				.andExpect(header().string("Location", endsWith("/sign-in")));
