@@ -4,11 +4,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -42,13 +49,14 @@ public class VenuesControllerApi {
 	@GetMapping
 	public CollectionModel<Venue> getAllVenues() {
 
-		return venueCollection(venueService.findAllByDesc());
+		return venueCollection(venueService.findAllByAsc());
 	}
 	
 	private CollectionModel<Venue> venueCollection(Iterable<Venue> venues) {
 		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
-
-		return CollectionModel.of(venues, selfLink);
+		Link profileLink = linkTo(HomeControllerApi.class).slash("profile").slash("venues").withRel("profile");
+		
+		return CollectionModel.of(venues, selfLink, profileLink);
 	}
 	
 	@GetMapping("/new")
@@ -78,8 +86,11 @@ public class VenuesControllerApi {
 	
 	private EntityModel<Venue> venueToResource(Venue venue) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(venue.getId()).withSelfRel();
-
-		return EntityModel.of(venue, selfLink);
+		Link venueLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).withRel("venue");
+		Link eventLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).slash("events").withRel("events");
+		Link next3eventsLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).slash("next3events").withRel("next3events");
+		
+		return EntityModel.of(venue, selfLink, venueLink, eventLink, next3eventsLink);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -117,5 +128,21 @@ public class VenuesControllerApi {
 		Iterable<Venue> venues = venueService.findByNameAsc(search);
 
 		return venueCollection(venues);
+	}
+	
+	@GetMapping("/{id}/next3events")
+	public CollectionModel<Event> list(@PathVariable("id") long id) {
+		
+		Iterable<Event> events = StreamSupport.stream(venueService.findById(id).getEvents().spliterator(), false)
+				.filter(x -> x.getDate().isAfter(LocalDate.now())).sorted(Comparator.comparing(Event::getDate)).limit(3)
+				.collect(Collectors.toList());
+		
+		return eventListToResource(events);
+	}
+	
+	private CollectionModel<Event> eventListToResource(Iterable<Event> events) {
+
+		return CollectionModel.of(events);
+
 	}
 } 

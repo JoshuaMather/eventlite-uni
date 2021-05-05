@@ -1,6 +1,5 @@
 package uk.ac.man.cs.eventlite.dao;
 
-import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface VenueService {
@@ -9,7 +8,7 @@ public interface VenueService {
 
 	public Iterable<Venue> findAll();
 	
-	public Iterable<Venue> findAllByDesc();
+	public Iterable<Venue> findAllByAsc();
 	
 	public Iterable<Venue> findByNameAsc(String name);
 		
@@ -20,7 +19,7 @@ public interface VenueService {
 
 	public void deleteById(long id);
 	
-	public Iterable<Venue> findTopThreeVenues(Iterable<Venue> venues);
-	
 	public void findLongtitudeLatitude(Venue venue);
+	
+	
 }

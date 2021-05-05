@@ -175,10 +175,25 @@
 						.addTo(map);
 				  
 			markers.push(marker);
-			var popupContent = events[i].name + "<br>Starts at "+ events[i].time.slice(0, -3);
-			for(j=1; j<events.length-1; j++){
-				if (events[i].venue.longitude == events[j].venue.longitude && events[i].venue.latitude == events[j].venue.latitude && i!=j){
-					popupContent += "<br>" + events[j].name + "<br>Starts at "+ events[j].time.slice(0, -3);
+			
+			var popupContent = "";
+			
+			if (events[i].time != null){
+				popupContent = events[i].name + "<br>Starts at " + events[i].time.slice(0, -3);
+			}
+			else{
+				popupContent = events[i].name + "<br>Starts at: No time ";
+			}
+			
+			for(j=0; j<events.length-1; j++){
+				if (events[i].venue.longitude == events[j].venue.longitude && events[i].venue.latitude == events[j].venue.latitude && i!=j){		
+				
+					if (events[j].time != null){
+						popupContent += "<br>" + events[j].name + "<br>Starts at " + events[j].time.slice(0, -3);
+					}
+					else{
+						popupContent += "<br>" + events[j].name + "<br>Starts at: No time ";
+					}
 		   			
 				}
 			}

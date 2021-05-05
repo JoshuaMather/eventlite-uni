@@ -22,6 +22,12 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
+	public Iterable<Event> findByVenue(Venue venue) {
+		return eventRepository.findByVenue(venue);
+	}
+
+	
+	@Override
 	public Iterable<Event> findAllByAsc() {
 		return eventRepository.findAllByOrderByDateAscNameAsc();
 	}
@@ -47,11 +53,11 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
-	public Iterable<Event> findUpcomingEvents(Iterable<Event> events){
+	public Iterable<Event> findUpcomingEvents(Iterable<Event> events, LocalDate now){
 		
 		ArrayList<Event> Events = new ArrayList<Event>();
 		
-		LocalDate now = LocalDate.now();
+//		LocalDate now = LocalDate.now();
 		
 		for (Event e: events) {
 			if (e.getDate().isAfter(now) || e.getDate().equals(now)) {
@@ -62,35 +68,14 @@ public class EventServiceImpl implements EventService {
 		Iterable<Event> UpcomingEvents = Events;
 		return UpcomingEvents;
 	}
+
 	
 	@Override
-	public Iterable<Event> findThreeUpcomingEvents(Iterable<Event> events){
+	public Iterable<Event> findPreviousEvents(Iterable<Event> events, LocalDate now){
 		
 		ArrayList<Event> Events = new ArrayList<Event>();
 		
-		LocalDate now = LocalDate.now();
-		
-		for (Event e: events) {
-			if (e.getDate().isAfter(now) || e.getDate().equals(now)) {
-				Events.add(e);
-			}
-		}
-		
-		if (Events.size()<3) {
-			Iterable<Event> UpcomingEvents = Events;
-			return UpcomingEvents;
-		}
-		Iterable<Event> UpcomingEvents = new ArrayList<Event>(Events.subList(Events.size() -3, Events.size()));
-		
-		return UpcomingEvents;
-	}
-	
-	@Override
-	public Iterable<Event> findPreviousEvents(Iterable<Event> events){
-		
-		ArrayList<Event> Events = new ArrayList<Event>();
-		
-		LocalDate now = LocalDate.now();
+//		LocalDate now = LocalDate.now();
 		
 		for (Event e: events) {
 			if (e.getDate().isBefore(now) || e.getDate().equals(now)) {

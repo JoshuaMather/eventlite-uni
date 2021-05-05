@@ -21,49 +21,44 @@
 </head>
 <body>
 
+	
   <div layout:fragment="content">
     
-    <br><h1 th:text="${event.name}"></h1><br> 
-  
-  	<lable><u><strong>Date of Event:</strong></u></lable>   	
-    <p th:text="${#temporals.format(event?.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
-    
-    <div th:if="${event.time} != null">	
-    	<lable><u><strong>Time of Event:</strong></u></lable>
-    	<p th:text="${event.time}"> Time</p>
-    </div> 
+    <div class="container">
     	
-    <div th:if="${event.venue} != null">	
-	    <label><u><strong>Location:</strong></u></label>
-	    <p> <a th:href="@{/venues/{id}(id=${event.venue.id})}" th:text="${event.venue.name}"></a></p>
-    </div> 
-    
-    <div th:if="${event.description != '' and event.description != null}">
-   		<lable><u><strong>Event Description:</strong></u></lable>
-    	<p th:text="${event.description}">No Description</p>
-	</div>
-	 
-	 <br>
-	 
-	 <!-- This is example implementation for more information
-	 <lable><u><strong>Event Description:</strong></u></lable>
-	 
-	 <span th:if="${event.description == null}">
-	 	<p> No description</p>
-	 </span>
-     
-     <span th:unless="${event.description == null}">
-     	<p th:text="${event.description}">No Description</p>
-     </span>-->
-  
- 	<table>
-     <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
-    
-     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
-	         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+    	
+	    <br><h1 th:text="${event.name}"></h1><br> 
+	  
+	  	<lable><u><strong>Date of Event:</strong></u></lable>   	
+	    <p th:text="${#temporals.format(event?.date, 'dd MMMM yyyy', new java.util.Locale('en', 'EN'))}"></p>
+	    
+	    <div th:if="${event.time} != null">	
+	    	<lable><u><strong>Time of Event:</strong></u></lable>
+	    	<p th:text="${event.time}"> Time</p>
+	    </div> 
+	    	
+	    <div th:if="${event.venue} != null">	
+		    <label><u><strong>Location:</strong></u></label>
+		    <p> <a th:href="@{/venues/{id}(id=${event.venue.id})}" th:text="${event.venue.name}"></a></p>
+	    </div> 
+	    
+	    <div th:if="${event.description != '' and event.description != null}">
+	   		<lable><u><strong>Event Description:</strong></u></lable>
+	    	<p th:text="${event.description}">No Description</p>
+		</div>
+		 
+		 <br>
+
+	  
+	 	<table>
+	     <td><a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a></td>
+	    
+	     <div sec:authorize="hasAnyRole('ORGANISER', 'ADMINISTRATOR')">
+		         <td><a class="btn btn-success" role="button" th:href="@{/events/{id}/update(id=${event.id})}"><i class="fas fa-edit"></i> Update</a></td>
+		 </div>
+	     </table>
+	     <br>
 	 </div>
-     </table>
-     <br>
      
      
      <!--Handling tweets-->
@@ -72,6 +67,12 @@
 	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
 	  	<span th:utext="'Your tweet &lt;strong&gt;' + ${tweet} + ' &lt;/strong&gt; posted.'"></span>
 	  </div>
+	  
+	   <div class="alert alert-danger alert-dismissible" role="alert" th:if="${fail}">
+	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+	  	<span th:utext="'&lt;strong&gt;' + ${fail} + ' &lt;/strong&gt;'"></span>
+	  </div>
+	  
      <label><strong>Share the event!</strong></label>
      	<form th:name="form1" th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
 			  <input type="text" class="form-control" name="tweet" th:value="${event.name}"><br>
@@ -85,8 +86,9 @@
 	      Delete Event
 	      </button>
 	 </form>
+	 <br>
 	 </div>
-	 <div id="mapContainer"><div id="map"></div></div>
+	 <div id="mapContainer"><div id="map"></div></div><br>
   </div>
 
 	<script layout:fragment="maps"  th:inline="javascript" th:if="${event.venue} != null">
@@ -109,7 +111,15 @@
 			var name = /*[[${event.name}]]*/
 			var time = /*[[${event.time}]]*/
 			
-			var popupContent = name + "<br>Starts at " + time.slice(0, -3);
+			var popupContent = "";
+			
+			if (time != null){
+				popupContent = name + "<br>Starts at " + time.slice(0, -3);;
+			}
+			else{
+				popupContent = name + "<br>Starts at: No time ";
+			}
+			
 		    marker.bindPopup(popupContent);
 		    
 		}else{

@@ -42,6 +42,7 @@ public class EventsControllerApi {
 		return eventCollection(eventService.findAll());
 	}
 
+	// may not be needed
 	private EntityModel<Event> singleEvent(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
 
@@ -63,14 +64,16 @@ public class EventsControllerApi {
 	@GetMapping("/{id}")
 	public EntityModel<Event> eventDescription(@PathVariable("id") long id) {
 		Event event = eventService.findById(id);
-
+		
 		return eventToResource(event);
 	}
 	
 	private EntityModel<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
+		Link eventLink = linkTo(EventsControllerApi.class).slash(event.getId()).withRel("event");
+		Link venueLink = linkTo(VenuesControllerApi.class).slash(event.getVenue().getId()).withRel("venue");
 
-		return EntityModel.of(event, selfLink);
+		return EntityModel.of(event, selfLink, eventLink, venueLink);
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

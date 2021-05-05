@@ -1,10 +1,16 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface EventService {
 
 	public long count();
+	
+	Iterable<Event> findByVenue(Venue venue);
 
 	public Iterable<Event> findAll();
 	
@@ -12,9 +18,9 @@ public interface EventService {
 	
 	public Iterable<Event> findAllByDesc();
 	
-	public Iterable<Event> findUpcomingEvents(Iterable<Event> events);
+	public Iterable<Event> findUpcomingEvents(Iterable<Event> events, LocalDate now);
 	
-	public Iterable<Event> findPreviousEvents(Iterable<Event> events);
+	public Iterable<Event> findPreviousEvents(Iterable<Event> events, LocalDate now);
 	
 	public Iterable<Event> findByNameAsc(String name);
 	
@@ -27,8 +33,6 @@ public interface EventService {
 	public Event findById(long id);
 	
 	public Iterable<Event> findByName(String id);
-	
-	public Iterable<Event> findThreeUpcomingEvents(Iterable<Event> events);
 	
 }
 

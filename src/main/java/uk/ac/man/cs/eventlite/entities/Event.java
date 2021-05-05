@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Event {
 	
+	//@JsonIgnore - if we want to ignore this attribute in the json
 	@Id
 	@GeneratedValue
 	private long id;

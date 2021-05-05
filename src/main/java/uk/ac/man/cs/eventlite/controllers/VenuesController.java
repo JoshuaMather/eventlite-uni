@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -37,7 +38,7 @@ public class VenuesController {
 	@GetMapping
 	public String getAllVenues(Model model) {
 
-		model.addAttribute("venues", venueService.findAllByDesc());
+		model.addAttribute("venues", venueService.findAllByAsc());
 
 		return "venues/index";
 	}
@@ -74,9 +75,11 @@ public class VenuesController {
 			return "redirect:/venues";
 		}
 		
+		LocalDate now = LocalDate.now(); 
+		
 		Venue venue = venueService.findById(id);
 		model.addAttribute("venue", venue);	
-		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(venue.getEvents()));
+		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(venue.getEvents(),now));
 
 		return "venues/show";
 	}
@@ -132,6 +135,6 @@ public class VenuesController {
 		}
 		venueService.save(venue);
 
-		return "redirect:/venues"; 
+		return String.format("redirect:/venues/%d", id); 
 	}
 }
