@@ -39,24 +39,17 @@ public class TwitterService {
     	}
     }
 
-    public List<String> getTimeLine() throws TwitterException{
-    	
-    	 Twitter twitter = getTwitterInstance();
-    	 List<String> timeline = twitter.getHomeTimeline().stream()
-    			 .map(item -> item.getText())
-    			 .collect(Collectors.toList());
+    public List<String> getTimeLine(List<Status> timeline) throws TwitterException{
+    	List<String> timelineS = timeline.stream().map(item -> item.getText()).collect(Collectors.toList());
     	 if (timeline.size() > 5) {
-    		 return timeline.subList(0, 5);
+    		 return timelineS.subList(0, 5);
     	 } else {
-    		 return timeline;
+    		 return timelineS;
     	 }
     	 
     }
     
-    public List<Long> getTimelineId() throws TwitterException{
-    	Twitter twitter = getTwitterInstance();
-   	 	List<Status> timeline = twitter.getHomeTimeline();
-   	 	
+    public List<Long> getTimelineId(List<Status> timeline) throws TwitterException{
     	List<Long> tweetid = new ArrayList<Long>();;
     	for(int i=0; i<timeline.size(); i++) {
     		tweetid.add(timeline.get(i).getId());
@@ -65,12 +58,8 @@ public class TwitterService {
     	return tweetid;
     }
     
-    public List<String> getTimelineDates() throws TwitterException{
-    	Twitter twitter = getTwitterInstance();
-   	 	List<String> tweetDate = twitter.getHomeTimeline().stream()
-			 .map(item -> item.getCreatedAt().toString())
-			 .collect(Collectors.toList());
-   	 	
+    public List<String> getTimelineDates(List<Status> timeline) throws TwitterException{
+    	List<String> tweetDate = timeline.stream().map(item -> item.getCreatedAt().toString()).collect(Collectors.toList());
    	 	if (tweetDate.size() > 5) {
    	 		return tweetDate.subList(0, 5);
    	 	} else {
@@ -79,7 +68,7 @@ public class TwitterService {
     
     }
    
-    private Twitter getTwitterInstance() {	
+    public Twitter getTwitterInstance() {	
 		return twitter;
 	}
 

@@ -1,6 +1,5 @@
 package uk.ac.man.cs.eventlite.dao;
 
-import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface VenueService {
@@ -21,4 +20,6 @@ public interface VenueService {
 	public void deleteById(long id);
 	
 	public void findLongtitudeLatitude(Venue venue);
+	
+	
 }

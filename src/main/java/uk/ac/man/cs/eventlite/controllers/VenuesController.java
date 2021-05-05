@@ -135,6 +135,6 @@ public class VenuesController {
 		}
 		venueService.save(venue);
 
-		return "redirect:/venues"; 
+		return String.format("redirect:/venues/%d", id); 
 	}
 }
