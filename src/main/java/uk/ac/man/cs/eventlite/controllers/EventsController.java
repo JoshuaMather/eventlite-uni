@@ -124,7 +124,7 @@ public class EventsController {
 	
 	@PostMapping("/{id}/update")
 	public String saveUpdates(Model model, @PathVariable("id") long id, 
-			@Valid @ModelAttribute Event event,BindingResult result) {
+			@Valid @ModelAttribute Event event,BindingResult result, RedirectAttributes redirectAttrs) {
 		
 		if(result.hasErrors()) {
 			model.addAttribute("event", event);
@@ -132,6 +132,8 @@ public class EventsController {
 		}
 		
 		eventService.save(event);
+		redirectAttrs.addFlashAttribute("ok_message", "Event updated.");
+		
 		
 		return String.format("redirect:/events/%d", id);
 	}
