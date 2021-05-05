@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,6 +121,80 @@ public class EventsControllerTest {
 		        .andExpect(header().string("Location", endsWith("/sign-in")));
 	}
 	
+	@Test
+	public void sortUpcomingEvents() {
+		ArrayList<Event> events = new ArrayList<Event>();
+		
+		Event alpha = new Event();
+		alpha.setName("Alpha");
+		alpha.setDate(LocalDate.of(2019, 07, 11));
+		alpha.setTime(LocalTime.of(12, 30, 0));
+		events.add(alpha);
+	
+		Event beta = new Event();
+		beta.setName("Beta");
+		beta.setDate(LocalDate.of(2019, 07, 11));
+		beta.setTime(LocalTime.of(10, 0, 0));
+		events.add(alpha);
+		
+		Event apple = new Event();
+		apple.setName("Apple");
+		apple.setDate(LocalDate.of(2019, 07, 12));
+		events.add(apple);
+		
+		LocalDate now = LocalDate.of(2019, 06, 01); 
+		
+		when(eventService.findAllByAsc()).thenReturn(events);
+		
+		Iterator<Event> upcommingEvents = eventService.findUpcomingEvents(events, now).iterator();
+		
+		Event event1 = upcommingEvents.next();
+		assertEquals(event1.getName(), alpha.getName());
+
+		Event event2 = upcommingEvents.next();
+		assertEquals(event2.getName(), beta.getName());
+
+		Event event3 = upcommingEvents.next();
+		assertEquals(event3.getName(), apple.getName());
+	}
+	
+	@Test
+	public void sortPreviousEvents() {
+		ArrayList<Event> events = new ArrayList<Event>();
+		
+		Event former = new Event();
+		former.setName("former");
+		former.setDate(LocalDate.of(2018, 01, 11));
+		former.setTime(LocalTime.of(11, 0, 0));
+		events.add(former);
+	
+		Event previous = new Event();
+		previous.setName("previous");
+		previous.setDate(LocalDate.of(2018, 01, 11));
+		previous.setTime(LocalTime.of(18, 30, 0));
+		events.add(previous);
+		
+		Event past = new Event();
+		past.setName("past");
+		past.setDate(LocalDate.of(2018, 01, 12));
+		previous.setTime(LocalTime.of(17, 0, 0));
+		events.add(past);
+		
+		LocalDate now = LocalDate.of(2019, 06, 01); 
+		when(eventService.findAllByDesc()).thenReturn(events);
+		
+		Iterator<Event> previousEvents = eventService.findPreviousEvents(events, now).iterator();
+		
+		Event event1 = previousEvents.next();
+		assertEquals(event1.getName(), former.getName());
+
+		Event event2 = previousEvents.next();
+		assertEquals(event2.getName(), previous.getName());
+
+		Event event3 = previousEvents.next();
+		assertEquals(event3.getName(), past.getName());
+		
+	}
 	
 	@Test
 	public void searchAnEvent() throws Exception {
