@@ -15,6 +15,7 @@ import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -53,8 +54,9 @@ public class VenuesControllerApi {
 	
 	private CollectionModel<Venue> venueCollection(Iterable<Venue> venues) {
 		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
-
-		return CollectionModel.of(venues, selfLink);
+		Link profileLink = linkTo(HomeControllerApi.class).slash("profile").slash("venues").withRel("profile");
+		
+		return CollectionModel.of(venues, selfLink, profileLink);
 	}
 	
 	@GetMapping("/new")
