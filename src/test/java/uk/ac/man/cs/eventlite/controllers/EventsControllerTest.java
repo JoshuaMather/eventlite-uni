@@ -395,6 +395,8 @@ public class EventsControllerTest {
 	
 	@Test
 	public void updateEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -416,10 +418,14 @@ public class EventsControllerTest {
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
     			.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
-	public void updateEventWithNoTime() throws Exception {
+	public void updateEventWithNoTime() throws Exception {	
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -432,6 +438,7 @@ public class EventsControllerTest {
     			.param("id", String.valueOf(e.getId()))
     			.param("name", e.getName())
     			.param("date", e.getDate().toString())
+    			.param("time", "")
     			.param("venue.id", String.valueOf(e.getVenue().getId()))
     			.accept(MediaType.TEXT_HTML)
     			.with(csrf())
@@ -439,6 +446,8 @@ public class EventsControllerTest {
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
     			.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
@@ -447,6 +456,7 @@ public class EventsControllerTest {
     	Venue v = new Venue();
     	v.setId(1);
     	e.setId(1);
+    	e.setName("");
     	e.setDate(LocalDate.now().plusDays(1));
     	e.setTime(LocalTime.now());
     	e.setVenue(v);
@@ -460,7 +470,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -484,7 +496,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     	        .andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -511,6 +525,8 @@ public class EventsControllerTest {
 	
 	@Test
 	public void updateEventWithDescription() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -533,6 +549,8 @@ public class EventsControllerTest {
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
 				.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
@@ -558,7 +576,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
-				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+				.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -580,7 +600,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -604,7 +626,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
-				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+				.andExpect(view().name("redirect:/events/1/update"));	
+    	
+    	verify(eventService, never()).save(e);
 	}
 
 }

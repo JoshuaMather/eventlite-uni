@@ -25,6 +25,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -355,6 +356,192 @@ public class VenuesControllerTest {
 		mvc.perform(get("/venues/1").accept(MediaType.TEXT_HTML))
 				.andExpect(status().isFound()).andExpect(view().name("redirect:/venues"))
 				.andExpect(model().hasNoErrors()).andExpect(handler().methodName("venueDescription"));
+	}
+	
+	
+	@Test
+	public void updateVenue() throws Exception {
+		ArgumentCaptor<Venue> arg = ArgumentCaptor.forClass(Venue.class);
+
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("venue");
+    	v.setCapacity(10);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1"));
+    	
+    	verify(venueService).findLongtitudeLatitude(arg.capture());
+    	verify(venueService).save(arg.capture());
+	}
+	
+	
+	@Test
+	public void updateVenueWithNoName() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("");
+    	v.setCapacity(10);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
+	}
+	
+	@Test
+	public void updateVenueWithNoRoad() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("venue");
+    	v.setCapacity(10);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
+	}
+	
+	@Test
+	public void updateVenueWithNoPostcode() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("");
+    	v.setCapacity(10);
+    	v.setPostcode("");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
+	}
+	
+	@Test
+	public void updateVenueWithNegativeCapacity() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("");
+    	v.setCapacity(-1);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
+	}
+	
+	@Test
+	public void updateVenueWithLongName() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    	v.setCapacity(10);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
+	}
+	
+	@Test
+	public void updateVenueWithLongRoad() throws Exception {
+    	Venue v = new Venue();
+    	v.setId(1);
+    	v.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    	v.setCapacity(10);
+    	v.setPostcode("M13 9PL");
+    	v.setRoad("M13 9PL");
+    	
+    	mvc.perform(post("/venues/1/update")
+    			.param("id", String.valueOf(v.getId()))
+    			.param("name", v.getName())
+    			.param("capacity", String.valueOf(v.getCapacity()))
+    			.param("postcode", v.getPostcode())
+    			.param("road", v.getRoad())
+    			.accept(MediaType.TEXT_HTML)
+    			.with(csrf())
+    			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
+    			.andExpect(handler().methodName("updateVenue"))
+    			.andExpect(status().isFound())
+    			.andExpect(view().name("redirect:/venues/1/update"));
+    	
+    	verify(venueService, never()).findLongtitudeLatitude(v);
+    	verify(venueService, never()).save(v);
 	}
 
 }
