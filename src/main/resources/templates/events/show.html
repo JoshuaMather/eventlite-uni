@@ -67,6 +67,12 @@
 	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
 	  	<span th:utext="'Your tweet &lt;strong&gt;' + ${tweet} + ' &lt;/strong&gt; posted.'"></span>
 	  </div>
+	  
+	   <div class="alert alert-danger alert-dismissible" role="alert" th:if="${fail}">
+	  	<button class="close" data-dismiss="alert" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+	  	<span th:utext="'&lt;strong&gt;' + ${fail} + ' &lt;/strong&gt;'"></span>
+	  </div>
+	  
      <label><strong>Share the event!</strong></label>
      	<form th:name="form1" th:action="@{'/events/'+${event.id} + '/tweet?=' + ${tweet}}" th:method="post">
 			  <input type="text" class="form-control" name="tweet" th:value="${event.name}"><br>

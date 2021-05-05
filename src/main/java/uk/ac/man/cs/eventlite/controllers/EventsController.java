@@ -152,6 +152,9 @@ public class EventsController {
 		tweet = tweet.strip();
 		
 		if(tweet.length() > 280) {
+			
+			redirectAttrs.addFlashAttribute("fail", "Tweet too long. It must be less than 280 characters!");
+			
 			return String.format("redirect:/events/%d", id);
 		}
 		
