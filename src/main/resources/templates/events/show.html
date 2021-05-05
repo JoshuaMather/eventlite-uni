@@ -111,7 +111,15 @@
 			var name = /*[[${event.name}]]*/
 			var time = /*[[${event.time}]]*/
 			
-			var popupContent = name + "<br>Starts at " + time.slice(0, -3);
+			var popupContent = "";
+			
+			if (time != null){
+				popupContent = name + "<br>Starts at " + time.slice(0, -3);;
+			}
+			else{
+				popupContent = name + "<br>Starts at: No time ";
+			}
+			
 		    marker.bindPopup(popupContent);
 		    
 		}else{
