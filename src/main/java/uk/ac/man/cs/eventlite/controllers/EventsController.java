@@ -1,7 +1,8 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.Instant;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.validation.Valid;
 
@@ -41,11 +42,12 @@ public class EventsController {
 
 	@GetMapping
 	public String getAllEvents(Model model) throws TwitterException {
+		LocalDate now = LocalDate.now();
 		Iterable<Event> events = eventService.findAllByAsc();
 		model.addAttribute("events", eventService.findAll());
-		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events));
+		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events,now));
 		events = eventService.findAllByDesc();
-		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
+		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events,now));
 		model.addAttribute("venues", venueService.findAll());
 		model.addAttribute("java8Instant", Instant.now());
 		TwitterService twitter = new TwitterService();
@@ -129,11 +131,12 @@ public class EventsController {
 
 	@GetMapping("/search")
 	public String searchEvent(Model model, @RequestParam(value = "search", required = true) String search) {
+		LocalDate now = LocalDate.now();
 		Iterable<Event> events = eventService.findByNameAsc(search);	
-		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events));
+		model.addAttribute("eventsUpcoming", eventService.findUpcomingEvents(events,now));
 		
 		events = eventService.findByNameDesc(search);
-		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events));
+		model.addAttribute("eventsPrevious", eventService.findPreviousEvents(events,now));
 		model.addAttribute("venues", venueService.findAll());
 		model.addAttribute("java8Instant", Instant.now());
 		
