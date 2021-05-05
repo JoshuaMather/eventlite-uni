@@ -41,7 +41,6 @@ public class Event {
 	@Size(max = 255, message = "The event name must have 255 characters or less.")
 	private String name;
 	
-	@JsonIgnore
 	@ManyToOne
 	private Venue venue;
 	
