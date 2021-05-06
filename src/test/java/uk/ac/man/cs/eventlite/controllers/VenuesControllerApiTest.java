@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -202,6 +204,36 @@ public class VenuesControllerApiTest {
 		assertThat("road", equalTo(arg.getValue().getRoad()));
 		assertThat("postcode", equalTo(arg.getValue().getPostcode()));
 		assertThat(1, equalTo(arg.getValue().getCapacity()));
+	}
+	
+	@Test
+	public void getAllVenues() throws Exception {
+		Venue v0 = new Venue();
+		v0.setId(1);
+		v0.setName("Venue");
+		v0.setAddress("Weston");
+		v0.setPostcode("M13 3BB");
+		v0.setCapacity(80);
+		v0.setLongitude(2.2348);
+		v0.setLatitude(53.4743);
+		when(venueService.findAllByAsc()).thenReturn(Collections.<Venue>singletonList(v0));
+		mvc.perform(get("/api/venues").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(handler().methodName("getAllVenues"))
+		       .andExpect(jsonPath("$.length()", equalTo(2)))
+		       .andExpect(jsonPath("$._links.profile.href", endsWith("/api/profile/venues")))        
+		       .andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));        
+		verify(venueService).findAllByAsc();
+		             
+	}
+	
+	@Test
+	public void getIndexWhenNoVenus() throws Exception {
+		when(venueService.findAllByAsc()).thenReturn(Collections.<Venue>emptyList());
+
+		mvc.perform(get("/api/venues").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(handler().methodName("getAllVenues")).andExpect(jsonPath("$.length()", equalTo(1)))
+				.andExpect(jsonPath("$._links.self.href", endsWith("/api/venues")));
+
+		verify(venueService).findAllByAsc();
 	}
 	
 	@Test

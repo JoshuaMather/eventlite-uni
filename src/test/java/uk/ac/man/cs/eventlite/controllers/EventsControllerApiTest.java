@@ -239,6 +239,18 @@ public class EventsControllerApiTest {
 	}
 	
 	@Test
+	public void getAllEvents() throws Exception {
+		Event e0 = new Event();
+		when(eventService.findAll()).thenReturn(Collections.<Event>singletonList(e0));
+		mvc.perform(get("/api/events").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(handler().methodName("getAllEvents"))
+		.andExpect(jsonPath("$.length()", equalTo(2)))    
+		.andExpect(jsonPath("$._links.self.href", endsWith("/api/events")));
+		            
+		verify(eventService).findAll();
+		             
+	}
+	
+	@Test
 	public void getSingleEvent() throws Exception {
 		Event e1 = new Event();
 		e1.setId(1);
@@ -256,5 +268,6 @@ public class EventsControllerApiTest {
 		verify(eventService).findById(1);
 		             
 	}
+	
 	
 }
