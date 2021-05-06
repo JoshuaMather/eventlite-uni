@@ -55,12 +55,6 @@ public class EventsControllerApi {
 		return CollectionModel.of(events, selfLink);
 	}
 	
-	
-	@GetMapping("/new")
-	public ResponseEntity<?> newEvent() {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-	}
-	
 	@GetMapping("/{id}")
 	public EntityModel<Event> eventDescription(@PathVariable("id") long id) {
 		Event event = eventService.findById(id);
@@ -74,46 +68,5 @@ public class EventsControllerApi {
 		Link venueLink = linkTo(VenuesControllerApi.class).slash(event.getVenue().getId()).withRel("venue");
 
 		return EntityModel.of(event, selfLink, eventLink, venueLink);
-	}
-	
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createEvent(@RequestBody @Valid Event event, BindingResult result) {
-
-		if (result.hasErrors()) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-
-		eventService.save(event);
-		URI location = linkTo(EventsControllerApi.class).slash(event.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteEventById(@PathVariable long id) {
-		eventService.deleteById(id);
-		
-		return ResponseEntity.noContent().build();
-	}
-	
-	
-	@PostMapping("/{id}/update")
-	public ResponseEntity<?> updateEvent(@PathVariable("id") long id, 
-			@Valid @ModelAttribute Event event, BindingResult result) {
-		if(result.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
-		
-		eventService.save(event);
-		
-		return ResponseEntity.ok().build();
-	}
-	
-	
-	@GetMapping("/search")
-	public CollectionModel<Event> searchEvents(@RequestParam(value = "search", required = false) String search) {
-		Iterable<Event> event = eventService.findByNameAsc(search);
-
-		return eventCollection(event);
 	}
 } 
