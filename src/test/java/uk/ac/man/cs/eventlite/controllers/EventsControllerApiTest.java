@@ -238,4 +238,23 @@ public class EventsControllerApiTest {
 		assertThat(localtime, equalTo(arg.getValue().getTime().toString()));
 	}
 	
+	@Test
+	public void getSingleEvent() throws Exception {
+		Event e1 = new Event();
+		e1.setId(1);
+		e1.setName("Event");
+		Venue v = new Venue();
+		e1.setVenue(v);
+		v.setId(1);
+		when(eventService.findById(1)).thenReturn(e1);
+		mvc.perform(get("/api/events/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(handler().methodName("eventDescription"))
+		             .andExpect(jsonPath("$.id", equalTo(1)))
+		             .andExpect(jsonPath("$.name", equalTo(e1.getName())))
+		             .andExpect(jsonPath("$._links.self.href", endsWith("/api/events/1")))
+		             .andExpect(jsonPath("$._links.event.href", endsWith("/api/events/1")))
+		             .andExpect(jsonPath("$._links.venue.href", endsWith("/api/venues/1")));
+		verify(eventService).findById(1);
+		             
+	}
+	
 }
