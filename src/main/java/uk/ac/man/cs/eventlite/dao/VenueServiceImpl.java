@@ -85,26 +85,30 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public void findLongtitudeLatitude(Venue venue){
     	String query = venue.getPostcode();
+    	
+    	if(query==null || query=="") {
+    		return;
+    	}
 
 		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
 				.accessToken("pk.eyJ1IjoiZXZlbnRsaXRlZjEiLCJhIjoiY2tta3hjb3VmMDduMzJ4cnpxdDVwa2M0eSJ9.Qn8ih-E9sJje_-XZw9gbEQ")
 				.query(query)
 				.build();
 		
+		 //venue.setLatitude(5);
+		 //venue.setLongitude(5);
 		mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
 			@Override
 			public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-		 
+				
 				List<CarmenFeature> results = response.body().features();
-		 
+				
 				if (results.size() > 0) {
 		 
 				  // Log the first results Point.
 				  Point p = results.get(0).center();
 				  venue.setLatitude(p.latitude());
 				  venue.setLongitude(p.longitude());
-				  venueRepository.save(venue);
-		 
 				}
 			}
 		 
@@ -112,6 +116,14 @@ public class VenueServiceImpl implements VenueService {
 			public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
 				throwable.printStackTrace();
 			}
+			
+			
 		});
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e){
+			e.printStackTrace();
+		}
     }
 }
