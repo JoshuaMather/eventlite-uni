@@ -201,4 +201,30 @@ public class VenuesControllerApiTest {
 		assertThat(1, equalTo(arg.getValue().getCapacity()));
 	}
 	
+	@Test
+	public void getSingleVenue() throws Exception {
+		Venue v1 = new Venue();
+		v1.setId(1);
+		v1.setName("Venue");
+		v1.setAddress("Weston");
+		v1.setPostcode("M13 3BB");
+		v1.setCapacity(80);
+		v1.setLongitude(2.2348);
+		v1.setLatitude(53.4743);
+		
+		when(venueService.findById(1)).thenReturn(v1);
+		mvc.perform(get("/api/venues/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(handler().methodName("venueDescription"))
+		             .andExpect(jsonPath("$.id", equalTo(1)))
+		             .andExpect(jsonPath("$.name", equalTo(v1.getName())))
+		             .andExpect(jsonPath("$.address", equalTo(v1.getAddress())))
+		             .andExpect(jsonPath("$.postcode", equalTo(v1.getPostcode())))
+		             .andExpect(jsonPath("$.capacity", equalTo(v1.getCapacity())))
+		             .andExpect(jsonPath("$.longitude", equalTo(v1.getLongitude())))
+		             .andExpect(jsonPath("$.latitude", equalTo(v1.getLatitude())))
+		             .andExpect(jsonPath("$._links.self.href", endsWith("/api/events/1")))
+		             .andExpect(jsonPath("$._links.events.href", endsWith("/api/venues/1/events")))
+		             .andExpect(jsonPath("$._links.next3events.href", endsWith("/api/venues/1/next3events")));
+		verify(venueService).findById(1);
+		             
+	}
 }
