@@ -216,6 +216,24 @@ public class EventsControllerTest {
 	}
 	
 	@Test
+	public void searchAnEventNoResults() throws Exception {
+		Event e1 = new Event();
+		e1.setId(1);
+    	e1.setName("Software engineering 1");
+    	Event e2 = new Event();
+		e2.setId(2);
+    	e2.setName("Software engineering 2");
+    	ArrayList<Event> list = new ArrayList<Event>();
+    	list.add(e1);
+    	list.add(e2);
+    	
+		when(eventService.findByNameAsc("Event")).thenReturn(null);
+		mvc.perform(get("/events/search").with(user("Rob").roles(Security.ADMIN_ROLE)).param("search", "Software").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("/events/search"))
+		.andExpect(handler().methodName("searchEvent"));
+	}
+	
+	@Test
 	public void getNewEventNoAuth() throws Exception {
 		mvc.perform(get("/events/new").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
 				.andExpect(header().string("Location", endsWith("/sign-in")));
@@ -396,6 +414,8 @@ public class EventsControllerTest {
 	
 	@Test
 	public void updateEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -417,10 +437,14 @@ public class EventsControllerTest {
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
     			.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
-	public void updateEventWithNoTime() throws Exception {
+	public void updateEventWithNoTime() throws Exception {	
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -433,6 +457,7 @@ public class EventsControllerTest {
     			.param("id", String.valueOf(e.getId()))
     			.param("name", e.getName())
     			.param("date", e.getDate().toString())
+    			.param("time", "")
     			.param("venue.id", String.valueOf(e.getVenue().getId()))
     			.accept(MediaType.TEXT_HTML)
     			.with(csrf())
@@ -440,6 +465,8 @@ public class EventsControllerTest {
     			.andExpect(handler().methodName("saveUpdates"))
     			.andExpect(status().isFound())
     			.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
@@ -448,6 +475,7 @@ public class EventsControllerTest {
     	Venue v = new Venue();
     	v.setId(1);
     	e.setId(1);
+    	e.setName("");
     	e.setDate(LocalDate.now().plusDays(1));
     	e.setTime(LocalTime.now());
     	e.setVenue(v);
@@ -461,7 +489,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -485,7 +515,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     	        .andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -512,6 +544,8 @@ public class EventsControllerTest {
 	
 	@Test
 	public void updateEventWithDescription() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+		
 		Event e = new Event();
     	Venue v = new Venue();
     	v.setId(1);
@@ -534,6 +568,8 @@ public class EventsControllerTest {
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
 				.andExpect(view().name("redirect:/events/1"));
+    	
+    	verify(eventService).save(arg.capture());
 	}
 	
 	@Test
@@ -559,7 +595,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
-				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+				.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -581,7 +619,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
     			.andExpect(handler().methodName("saveUpdates"))
-    			.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+    			.andExpect(view().name("redirect:/events/1/update"));
+    	
+    	verify(eventService, never()).save(e);
 	}
 	
 	@Test
@@ -605,7 +645,9 @@ public class EventsControllerTest {
     			.with(csrf())
     			.with(user("Mustafa").roles(Security.ADMIN_ROLE)))
 		    	.andExpect(handler().methodName("saveUpdates"))
-				.andExpect(view().name("redirect:/events/"+v.getId()+"/update"));	
+				.andExpect(view().name("redirect:/events/1/update"));	
+    	
+    	verify(eventService, never()).save(e);
 	}
 
 }

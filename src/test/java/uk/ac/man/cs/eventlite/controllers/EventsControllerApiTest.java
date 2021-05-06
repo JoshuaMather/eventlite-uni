@@ -88,6 +88,7 @@ public class EventsControllerApiTest {
 	}
 	
 	@Test
+<<<<<<< HEAD
 	public void deleteAnEvent() throws Exception {
 		Event event = new Event();
 		Venue venue = new Venue();
@@ -251,6 +252,8 @@ public class EventsControllerApiTest {
 	}
 	
 	@Test
+=======
+>>>>>>> branch 'test_branch' of https://gitlab.cs.man.ac.uk/comp23412_2020/eventlite_F01.git
 	public void getSingleEvent() throws Exception {
 		Event e1 = new Event();
 		e1.setId(1);

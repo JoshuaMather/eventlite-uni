@@ -59,24 +59,6 @@ public class VenuesControllerApi {
 		return CollectionModel.of(venues, selfLink, profileLink);
 	}
 	
-	@GetMapping("/new")
-	public ResponseEntity<?> newVenue() {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-	}
-	
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createVenue(@RequestBody @Valid Venue venue, BindingResult result) {
-
-		if (result.hasErrors()) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-
-		venueService.save(venue);
-		URI location = linkTo(VenuesControllerApi.class).slash(venue.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-	}
-	
 	@GetMapping("/{id}")
 	public EntityModel<Venue> venueDescription(@PathVariable("id") long id) {
 		Venue venue = venueService.findById(id);
@@ -91,43 +73,6 @@ public class VenuesControllerApi {
 		Link next3eventsLink = linkTo(VenuesControllerApi.class).slash(venue.getId()).slash("next3events").withRel("next3events");
 		
 		return EntityModel.of(venue, selfLink, venueLink, eventLink, next3eventsLink);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteVenueById(@PathVariable long id) {
-		Venue venue = venueService.findById(id);
-		Iterable<Event> events = venue.getEvents();
-		
-		int count = ((Collection<?>) events).size();
-		
-		if (count == 0) {
-			venueService.deleteById(id);
-			
-		}
-		else {
-			return ResponseEntity.badRequest().build();
-		}
-		
-		return ResponseEntity.noContent().build();
-	}
-	
-	@PostMapping("/{id}/update")
-	public ResponseEntity<?> updateVenueById(@PathVariable("id") long id, 
-			@RequestBody @Valid @ModelAttribute Venue venue, BindingResult result) {
-		
-		if(result.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
-		
-		venueService.save(venue);
-		return ResponseEntity.ok().build();
-	}
-
-	@GetMapping("/search")
-	public CollectionModel<Venue> searchVenues(@RequestParam(value = "search", required = false) String search) {
-		Iterable<Venue> venues = venueService.findByNameAsc(search);
-
-		return venueCollection(venues);
 	}
 	
 	@GetMapping("/{id}/next3events")

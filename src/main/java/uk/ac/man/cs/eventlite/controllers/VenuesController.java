@@ -62,6 +62,7 @@ public class VenuesController {
 		}
 
 		venue.setAddress(venue.getRoad() + ", " + venue.getPostcode());
+		venueService.findLongtitudeLatitude(venue);
 		venueService.save(venue);
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");
 
@@ -126,14 +127,16 @@ public class VenuesController {
 
 	@PostMapping("/{id}/update")
 	public String updateVenue(Model model, @PathVariable("id") long id, 
-			@Valid @ModelAttribute Venue venue,BindingResult result) 
+			@Valid @ModelAttribute Venue venue,BindingResult result, RedirectAttributes redirectAttrs) 
 	{
 		
 		if(result.hasErrors()){
-			
+			model.addAttribute("venue", venue);
 			return String.format("redirect:/venues/%d/update", id);
 		}
+		venueService.findLongtitudeLatitude(venue);
 		venueService.save(venue);
+		redirectAttrs.addFlashAttribute("ok_message", "Venue updated.");
 
 		return String.format("redirect:/venues/%d", id); 
 	}

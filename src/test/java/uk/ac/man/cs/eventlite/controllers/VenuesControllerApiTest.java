@@ -83,6 +83,7 @@ public class VenuesControllerApiTest {
 //	}
 	
 	@Test
+<<<<<<< HEAD
 	public void getNewVenue() throws Exception {
 		mvc.perform(get("/api/venues/new").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
 				.andExpect(handler().methodName("newVenue"));
@@ -237,6 +238,8 @@ public class VenuesControllerApiTest {
 	}
 	
 	@Test
+=======
+>>>>>>> branch 'test_branch' of https://gitlab.cs.man.ac.uk/comp23412_2020/eventlite_F01.git
 	public void getSingleVenue() throws Exception {
 		Venue v1 = new Venue();
 		v1.setId(1);
