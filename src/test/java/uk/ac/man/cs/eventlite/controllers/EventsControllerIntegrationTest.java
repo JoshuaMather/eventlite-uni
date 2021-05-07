@@ -64,6 +64,17 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 	}
 	
 	@Test
+    public void testSearchEvent() {
+        client.get().uri("/events/search/?search=COMP23412+lab").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
+        .expectHeader()
+        .contentTypeCompatibleWith(MediaType.TEXT_HTML)
+        .expectBody(String.class)
+        .consumeWith(result -> {
+            assertThat(result.getResponseBody(), containsString("COMP23412 lab"));
+        });
+    }
+	
+	@Test
 	public void deleteEventNoUser() {
 		
 		client.delete().uri("/events/8").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
