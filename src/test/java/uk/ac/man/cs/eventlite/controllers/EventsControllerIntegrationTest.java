@@ -95,6 +95,15 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 	}
 	
 	@Test
+	public void testCreateEventNoUser() {
+		
+		client.post().uri("/events").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", endsWith("/sign-in"));
+
+		assertThat(rows, equalTo(countRowsInTable("event")));
+	}
+	
+	@Test
 	public void testCreateEvent() {
 		String[] tokens = login();
 		

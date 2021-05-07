@@ -84,6 +84,15 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 	}
 	
 	@Test
+	public void testCreateVenueNoUser() {
+		
+		client.post().uri("/venues").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", endsWith("/sign-in"));
+
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	
+	@Test
 	public void testCreateVenue() {
 		String[] tokens = login();
 		
