@@ -17,6 +17,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import uk.ac.man.cs.eventlite.EventLite;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -52,6 +53,17 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 	public void testGetAllVenues() {
 		client.get().uri("/venues").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk();
 	}
+	
+	@Test
+    public void testSearchVenue() {
+        client.get().uri("/venues/search/?search=Kilburn+LF31").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
+        .expectHeader()
+        .contentTypeCompatibleWith(MediaType.TEXT_HTML)
+        .expectBody(String.class)
+        .consumeWith(result -> {
+            assertThat(result.getResponseBody(), containsString("Kilburn LF31"));
+        });
+    }
 	
 	@Test
 	public void deleteVenueNoUser() {
