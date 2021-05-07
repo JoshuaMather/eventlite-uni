@@ -201,7 +201,58 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
     }
 	
 	@Test
-	public void deleteEventNoUser() {
+	public void testUpdateEventNoUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("e_id", "8");
+		form.add("name", "name");
+		form.add("date", "2021-12-31");
+		form.add("time", "15:00");
+		form.add("v_id", "5");
+		form.add("description", "test description");
+
+		// session ID not set, so no credentials.
+		// This should redirect to the sign-in page.
+		client.post().uri("/events/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/sign-in"));
+
+		// nothing should be added
+		assertThat(rows, equalTo(countRowsInTable("event")));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateEventWithUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("e_id", "8");
+		form.add("name", "name");
+		form.add("date", "2021-12-31");
+		form.add("time", "15:00");
+		form.add("v_id", "5");
+		form.add("description", "test description");
+		
+		client.post().uri("/events/8/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {
+					cookies.add(SESSION_KEY, tokens[1]);
+				}).exchange().expectStatus()
+				.isFound()
+				.expectHeader()
+				.value("Location", endsWith("/events/8"));
+
+		
+		assertThat(rows, equalTo(countRowsInTable("event")));
+	}
+	
+	@Test
+	public void testDeleteEventNoUser() {
 		
 		client.delete().uri("/events/8").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
 				.expectHeader().value("Location", endsWith("/sign-in"));
@@ -211,7 +262,7 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 
 	@Test
 	@DirtiesContext
-	public void deleteEventWithUser() {
+	public void testDeleteEventWithUser() {
 		String[] tokens = login();
 
 		client.delete().uri("/events/8").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0])
