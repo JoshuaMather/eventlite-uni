@@ -210,6 +210,99 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		assertThat(rows - 1, equalTo(countRowsInTable("venue")));
 	}
 	
+	@Test
+	public void testUpdateVenueNoUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "name");
+		form.add("road", "road");
+		form.add("postcode", "Code");
+		form.add("capacity", "100");
+
+		// session ID not set, so no credentials.
+		// This should redirect to the sign-in page.
+		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/sign-in"));
+
+		// nothing should be added
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueWithUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "name");
+		form.add("road", "road");
+		form.add("postcode", "Code");
+		form.add("capacity", "100");
+		
+		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {
+					cookies.add(SESSION_KEY, tokens[1]);
+				}).exchange().expectStatus()
+				.isFound()
+				.expectHeader()
+				.value("Location", endsWith("/venues/6"));
+		
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueNoData() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "");
+		form.add("road", "");
+		form.add("postcode", "");
+		form.add("capacity", "");
+		
+		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {
+					cookies.add(SESSION_KEY, tokens[1]);
+				}).exchange().expectStatus()
+				.isFound()
+				.expectHeader()
+				.value("Location", endsWith("/venues/6/update"));
+
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueBadData() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		form.add("road", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		form.add("postcode", "P");
+		form.add("capacity", "-1");
+		
+		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {
+					cookies.add(SESSION_KEY, tokens[1]);
+				}).exchange().expectStatus()
+				.isFound()
+				.expectHeader()
+				.value("Location", endsWith("/venues/6/update"));
+
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	
 	private String[] login() {
 		String[] tokens = new String[2];
 
