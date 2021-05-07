@@ -63,6 +63,18 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		assertThat(row, equalTo(countRowsInTable("venue")));
 	}
 	
+
+	@Test
+	@DirtiesContext
+	public void deleteVenueWithUser() {
+		String[] tokens = login();
+
+		client.delete().uri("/venues/4").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0])
+				.cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/venues"));
+        
+		assertThat(row - 1, equalTo(countRowsInTable("venue")));
+	}
 	
 	private String[] login() {
 		String[] tokens = new String[2];
