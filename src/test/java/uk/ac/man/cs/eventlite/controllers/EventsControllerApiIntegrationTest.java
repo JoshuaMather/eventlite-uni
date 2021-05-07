@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import uk.ac.man.cs.eventlite.EventLite;
 
@@ -33,11 +35,20 @@ public class EventsControllerApiIntegrationTest extends AbstractTransactionalJUn
 	public void setup() {
 		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port + "/api").build();
 	}
-
-//	@Test
-//	public void testGetAllEvents() {
-//		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
-//				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
-//				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(7));
-//	}
+	
+	@Test
+	public void testGetAllEvents() {
+		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
+				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
+				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(7));
+	}
+	
+	@Test
+	public void testGetSingleEvent() {
+		client.get().uri("/events/9").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
+				.contentTypeCompatibleWith(MediaType.APPLICATION_JSON).expectBody(String.class)
+				.consumeWith(result -> {
+					assertThat(result.getResponseBody(), containsString("COMP23412"));
+				});
+	}
 }
