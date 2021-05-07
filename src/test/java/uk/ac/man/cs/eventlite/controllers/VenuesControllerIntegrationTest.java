@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -189,6 +190,128 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
     }
 	
 	@Test
+	public void testGetUpdateVenue() {
+		String[] tokens = login();
+		
+		client.get().uri("/venues/1/update").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1])
+		.exchange().expectStatus().isOk();
+
+	}
+	
+	@Test
+	public void testUpdateVenueNoUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("v_id", "1");
+		form.add("name", "venue");
+		form.add("road", "road");
+		form.add("postcode", "postcode");
+		form.add("capacity", "1");
+
+		// session ID not set, so no credentials.
+		// This should redirect to the sign-in page.
+		client.post().uri("/venue/1/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/sign-in"));
+
+		// nothing should be added
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueWithUser() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("v_id", "1");
+		form.add("name", "venue");
+		form.add("road", "road");
+		form.add("postcode", "postcode");
+		form.add("capacity", "1");
+		
+		client.post().uri("/venues/1/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {
+					cookies.add(SESSION_KEY, tokens[1]);
+				}).exchange().expectStatus()
+				.isFound()
+				.expectHeader()
+				.value("Location", endsWith("/venues/1"));
+
+		
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+		
+		// check values are updated
+		Venue new_venue = venueService.findById(1);
+		assertEquals("venue", new_venue.getName());
+		assertEquals("road", new_venue.getRoad());
+		assertEquals("postcode", new_venue.getPostcode());
+		assertEquals("1", String.valueOf(new_venue.getCapacity()));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueNoData() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("v_id", "1");
+		form.add("name", "");
+		form.add("date", "");
+		form.add("time", "");
+		form.add("v_id", "");
+		form.add("description", "");
+
+		client.post().uri("/venues/1/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		.bodyValue(form).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/venues/1/update"));
+		
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+		
+		// check values are the same 
+		Venue new_venue = venueService.findById(1);
+		assertEquals("Kilburn G23", new_venue.getName());
+		assertEquals("M13 9PL", new_venue.getRoad());
+		assertEquals("M13 9PL", new_venue.getPostcode());
+		assertEquals("80", String.valueOf(new_venue.getCapacity()));
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateVenueBadData() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("v_id", "1");
+		form.add("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		form.add("road", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		form.add("postcode", "AAA");
+		form.add("capacity", "-1");
+		
+		client.post().uri("/venues/1/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		.bodyValue(form).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/venues/1/update"));
+		
+		assertThat(rows, equalTo(countRowsInTable("venue")));
+		
+		// check values are the same 
+		Venue new_venue = venueService.findById(1);
+		assertEquals("Kilburn G23", new_venue.getName());
+		assertEquals("M13 9PL", new_venue.getRoad());
+		assertEquals("M13 9PL", new_venue.getPostcode());
+		assertEquals("80", String.valueOf(new_venue.getCapacity()));
+	}
+	
+	@Test
 	public void deleteVenueNoUser() {
 		
 		client.delete().uri("/venues/6").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
@@ -210,98 +333,6 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		assertThat(rows - 1, equalTo(countRowsInTable("venue")));
 	}
 	
-	@Test
-	public void testUpdateVenueNoUser() {
-		String[] tokens = login();
-
-		// Attempt to POST a valid data
-		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.add("_csrf", tokens[0]);
-		form.add("name", "name");
-		form.add("road", "road");
-		form.add("postcode", "Code");
-		form.add("capacity", "100");
-
-		// session ID not set, so no credentials.
-		// This should redirect to the sign-in page.
-		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
-				.value("Location", endsWith("/sign-in"));
-
-		// nothing should be added
-		assertThat(rows, equalTo(countRowsInTable("venue")));
-	}
-	
-	@Test
-	@DirtiesContext
-	public void testUpdateVenueWithUser() {
-		String[] tokens = login();
-
-		// Attempt to POST a valid data
-		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.add("_csrf", tokens[0]);
-		form.add("name", "name");
-		form.add("road", "road");
-		form.add("postcode", "Code");
-		form.add("capacity", "100");
-		
-		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).cookies(cookies -> {
-					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus()
-				.isFound()
-				.expectHeader()
-				.value("Location", endsWith("/venues/6"));
-		
-		assertThat(rows, equalTo(countRowsInTable("venue")));
-	}
-	
-	@Test
-	@DirtiesContext
-	public void testUpdateVenueNoData() {
-		String[] tokens = login();
-
-		// Attempt to POST a valid data
-		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.add("_csrf", tokens[0]);
-		form.add("name", "");
-		form.add("road", "");
-		form.add("postcode", "");
-		form.add("capacity", "");
-		
-		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).cookies(cookies -> {
-					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus()
-				.isFound()
-				.expectHeader()
-				.value("Location", endsWith("/venues/6/update"));
-
-		assertThat(rows, equalTo(countRowsInTable("venue")));
-	}
-	@Test
-	@DirtiesContext
-	public void testUpdateVenueBadData() {
-		String[] tokens = login();
-
-		// Attempt to POST a valid data
-		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.add("_csrf", tokens[0]);
-		form.add("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		form.add("road", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		form.add("postcode", "P");
-		form.add("capacity", "-1");
-		
-		client.post().uri("/venues/6/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).cookies(cookies -> {
-					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus()
-				.isFound()
-				.expectHeader()
-				.value("Location", endsWith("/venues/6/update"));
-
-		assertThat(rows, equalTo(countRowsInTable("venue")));
-	}
 	
 	private String[] login() {
 		String[] tokens = new String[2];

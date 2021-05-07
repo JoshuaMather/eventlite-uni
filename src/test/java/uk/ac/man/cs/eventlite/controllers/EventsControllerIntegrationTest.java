@@ -216,6 +216,15 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
     }
 	
 	@Test
+	public void testGetUpdateEvent() {
+		String[] tokens = login();
+		
+		client.get().uri("/events/8/update").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1])
+		.exchange().expectStatus().isOk();
+
+	}
+	
+	@Test
 	public void testUpdateEventNoUser() {
 		String[] tokens = login();
 
@@ -263,7 +272,46 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 				.value("Location", endsWith("/events/8"));
 		
 		assertThat(rows, equalTo(countRowsInTable("event")));
+		
+		// check values are updated
+		Event new_event = eventService.findById(8);
+		assertEquals("name", new_event.getName());
+		assertEquals("2021-12-31", new_event.getDate().toString());
+		assertEquals("5", String.valueOf(new_event.getV_id()));
+		assertEquals("test description", new_event.getDescription());
+		assertEquals("15:00", new_event.getTime().toString());
 	}
+	
+	@Test
+	@DirtiesContext
+	public void testUpdateEventNoData() {
+		String[] tokens = login();
+
+		// Attempt to POST a valid data
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("e_id", "8");
+		form.add("name", "");
+		form.add("date", "");
+		form.add("time", "");
+		form.add("v_id", "");
+		form.add("description", "");
+
+		client.post().uri("/events/8/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		.bodyValue(form).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/events/8/update"));
+		
+		assertThat(rows, equalTo(countRowsInTable("event")));
+		
+		// check values are the same 
+		Event new_event = eventService.findById(8);
+		assertEquals("COMP23412 Showcase, group H", new_event.getName());
+		assertEquals("2021-05-11", new_event.getDate().toString());
+		assertEquals("0", String.valueOf(new_event.getV_id()));
+		assertEquals(null, new_event.getDescription());
+		assertEquals("11:00", new_event.getTime().toString());
+	}
+	
 	@Test
 	@DirtiesContext
 	public void testUpdateEventBadData() {
@@ -274,46 +322,26 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 		form.add("_csrf", tokens[0]);
 		form.add("e_id", "8");
 		form.add("name", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		form.add("date", "2021-12-31");
-		form.add("time", "15:00");
-		form.add("v_id", "5");
-		form.add("description", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		
-		client.post().uri("/events/8/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).cookies(cookies -> {
-					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus()
-				.isFound()
-				.expectHeader()
-				.value("Location", endsWith("/events/8/update"));
-
-		assertThat(rows, equalTo(countRowsInTable("event")));
-	}
-	@Test
-	@DirtiesContext
-	public void testUpdateEventNoData() {
-		String[] tokens = login();
-
-		// Attempt to POST a valid data
-		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-		form.add("_csrf", tokens[0]);
-		form.add("e_id", "");
-		form.add("name", "");
-		form.add("date", "");
+		form.add("date", "1990-01-01");
 		form.add("time", "");
 		form.add("v_id", "");
-		form.add("description", "");
-		
+		form.add("description", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
 		client.post().uri("/events/8/update").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.bodyValue(form).cookies(cookies -> {
-					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus()
-				.isFound()
-				.expectHeader()
-				.value("Location", endsWith("/events/8/update"));
+		.bodyValue(form).header(CSRF_HEADER, tokens[0]).cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/events/8/update"));
 		
 		assertThat(rows, equalTo(countRowsInTable("event")));
+		
+		// check values are the same 
+		Event new_event = eventService.findById(8);
+		assertEquals("COMP23412 Showcase, group H", new_event.getName());
+		assertEquals("2021-05-11", new_event.getDate().toString());
+		assertEquals("0", String.valueOf(new_event.getV_id()));
+		assertEquals(null, new_event.getDescription());
+		assertEquals("11:00", new_event.getTime().toString());
 	}
+	
 	@Test
 	public void testDeleteEventNoUser() {
 		
