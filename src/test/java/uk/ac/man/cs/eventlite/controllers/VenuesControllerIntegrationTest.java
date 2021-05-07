@@ -85,9 +85,18 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 	
 	@Test
 	public void testCreateVenueNoUser() {
+		String[] tokens = login();
 		
-		client.post().uri("/venues").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
-				.expectHeader().value("Location", endsWith("/sign-in"));
+		MultiValueMap<String, String> venue = new LinkedMultiValueMap<>();
+		venue.add("_csrf", tokens[0]);
+		venue.add("name", "venue");
+		venue.add("road", "4 Oxford Road");
+		venue.add("postcode", "M13 9PL");
+		venue.add("capacity", "20");
+		
+		client.post().uri("/venues").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		.bodyValue(venue).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/sign-in"));
 
 		assertThat(rows, equalTo(countRowsInTable("venue")));
 	}

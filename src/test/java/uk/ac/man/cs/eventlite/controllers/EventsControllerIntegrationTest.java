@@ -96,9 +96,24 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
 	
 	@Test
 	public void testCreateEventNoUser() {
+		String[] tokens = login();
 		
-		client.post().uri("/events").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
-				.expectHeader().value("Location", endsWith("/sign-in"));
+		LocalDate date = LocalDate.of(2099, 3, 10);
+		Venue venue = new Venue();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+		String localtime = LocalTime.now().format(dtf);
+		
+		MultiValueMap<String, String> event = new LinkedMultiValueMap<>();
+		event.add("_csrf", tokens[0]);
+		event.add("name", "event");
+		event.add("date", date.toString());
+		event.add("v_id", String.valueOf(venue.getId()));
+		event.add("description", "description");
+		event.add("time", localtime);
+		
+		client.post().uri("/events").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		.bodyValue(event).exchange().expectStatus().isFound()
+		.expectHeader().value("Location", endsWith("/sign-in"));
 
 		assertThat(rows, equalTo(countRowsInTable("event")));
 	}
