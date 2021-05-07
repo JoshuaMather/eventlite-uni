@@ -1,9 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 

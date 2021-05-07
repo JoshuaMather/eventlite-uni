@@ -2,7 +2,6 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import javax.validation.Valid;
