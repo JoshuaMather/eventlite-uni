@@ -35,6 +35,11 @@
         </tr>
       </tbody>
     </table>
+    </div>
+    
+    <div th:if="${venues.size()} == 0">	
+    	 <h3>There are no results found for your search.</h3>
+    </div>
     
     <a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
   </div>

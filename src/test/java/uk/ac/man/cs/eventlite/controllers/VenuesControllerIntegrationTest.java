@@ -169,6 +169,17 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
     }
 	
 	@Test
+    public void testSearchVenueNoResult() {
+        client.get().uri("/venues/search/?search=nosuchvenue").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
+        .expectHeader()
+        .contentTypeCompatibleWith(MediaType.TEXT_HTML)
+        .expectBody(String.class)
+        .consumeWith(result -> {
+            assertThat(result.getResponseBody(), containsString("There are no results found for your search."));
+        });
+    }
+	
+	@Test
 	public void deleteVenueNoUser() {
 		
 		client.delete().uri("/venues/6").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()

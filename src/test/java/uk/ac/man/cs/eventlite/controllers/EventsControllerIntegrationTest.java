@@ -190,6 +190,17 @@ public class EventsControllerIntegrationTest extends AbstractTransactionalJUnit4
     }
 	
 	@Test
+    public void testSearchEventNoResult() {
+        client.get().uri("/events/search/?search=nosuchevent").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
+        .expectHeader()
+        .contentTypeCompatibleWith(MediaType.TEXT_HTML)
+        .expectBody(String.class)
+        .consumeWith(result -> {
+            assertThat(result.getResponseBody(), containsString("There are no results found for your search."));
+        });
+    }
+	
+	@Test
 	public void deleteEventNoUser() {
 		
 		client.delete().uri("/events/8").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
