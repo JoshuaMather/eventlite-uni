@@ -73,6 +73,11 @@ public class VenueServiceImpl implements VenueService {
 		venueRepository.deleteById(id);
 	}
 	
+	@Override
+	public Iterable<Venue> findByName(String name) {
+		return venueRepository.findAllByNameContains(name);
+	}
+	
     public static void sort(ArrayList<Venue> list) 
     { 
   
