@@ -12,4 +12,6 @@ public interface VenueRepository extends CrudRepository<Venue, Long>{
 	public Iterable<Venue> findAllByOrderByNameAsc();
 	
 	public Iterable<Venue> findByNameContainsIgnoreCaseOrderByNameAsc(String name);
+	
+	public Iterable<Venue> findAllByNameContains(String name);
 }
